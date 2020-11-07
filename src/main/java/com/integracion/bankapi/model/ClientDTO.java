@@ -1,15 +1,7 @@
 package com.integracion.bankapi.model;
 
+public class ClientDTO {
 
-import javax.persistence.*;
-import java.util.List;
-
-@Entity
-@Table(name = "clients")
-public class Client {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String lastName;
@@ -19,12 +11,7 @@ public class Client {
     private String email;
     private Boolean valid;
 
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "client_id")
-    private List<Account> accounts;
-
-    public Client() {
+    public ClientDTO() {
     }
 
     public Integer getId() {
@@ -82,12 +69,4 @@ public class Client {
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
-
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-    }
 }
