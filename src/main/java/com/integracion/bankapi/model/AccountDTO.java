@@ -3,7 +3,7 @@ package com.integracion.bankapi.model;
 public class AccountDTO {
 
     private Integer id;
-    private String CBU;
+    private String cbu;
     private Integer clientId;
 
 
@@ -14,9 +14,9 @@ public class AccountDTO {
 
     public void setId(Integer id) { this.id = id; }
 
-    public String getCBU() { return CBU; }
+    public String getCbu() { return cbu; }
 
-    public void setCBU(String CBU) { this.CBU = CBU; }
+    public void setCbu(String cbu) { this.cbu = cbu; }
 
     public Integer getClientId() { return clientId; }
 

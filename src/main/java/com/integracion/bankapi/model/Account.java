@@ -11,7 +11,7 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String CBU;
+    private String cbu;
 
     public Account() {
     }
@@ -24,8 +24,8 @@ public class Account {
         this.id = id;
     }
 
-    public String getCBU() { return CBU; }
+    public String getCbu() { return cbu; }
 
-    public void setCBU(String CBU) { this.CBU = CBU; }
+    public void setCbu(String cbu) { this.cbu = cbu; }
 }
 

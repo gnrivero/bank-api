@@ -41,11 +41,11 @@ public class AccountService {
 
     private void mapping (AccountDTO accountOrigin, Account account){
         account.setId(accountOrigin.getId());
-        account.setCBU(accountOrigin.getCBU());
+        account.setCbu(accountOrigin.getCbu());
     }
 
     private void mapping (Account accountOrigin, AccountDTO account){
         account.setId(accountOrigin.getId());
-        account.setCBU(accountOrigin.getCBU());
+        account.setCbu(accountOrigin.getCbu());
     }
 }
