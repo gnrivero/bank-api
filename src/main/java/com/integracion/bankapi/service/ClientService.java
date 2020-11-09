@@ -6,6 +6,7 @@ import com.integracion.bankapi.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -21,12 +22,19 @@ public class ClientService {
     }
 
     public ClientDTO edit(ClientDTO client) {
-        Client clientRepo = new Client();
-        mapping(client,clientRepo);
-        clientRepo =repo.save(clientRepo);
-        mapping(clientRepo,client);
-        return client;
 
+        Optional<Client> clientRepo = repo.findById(client.getId());
+        if(clientRepo.isPresent()){
+            Client clientEdit = new Client();
+            clientEdit.setAccounts(clientRepo.get().getAccounts());
+            mapping(client,clientEdit);
+            clientEdit =repo.save(clientEdit);
+            mapping(clientEdit,client);
+        }else{
+            client= null;
+        }
+
+        return client;
     }
 
     public ClientDTO getClientByDni(Integer dni){
@@ -35,6 +43,9 @@ public class ClientService {
         ClientDTO client = new ClientDTO();
         if(clientRepo != null){
             mapping(clientRepo,client);
+        }
+        else{
+            client = null;
         }
         return client;
     }
@@ -47,7 +58,7 @@ public class ClientService {
         client.setDni(clientOrigin.getDni());
         client.setLastName(clientOrigin.getLastName());
         client.setEmail(clientOrigin.getEmail());
-        client.setValid(clientOrigin.getValid());
+        client.setStatus(clientOrigin.getStatus());
 
     }
 
@@ -59,6 +70,6 @@ public class ClientService {
         client.setDni(clientOrigin.getDni());
         client.setLastName(clientOrigin.getLastName());
         client.setEmail(clientOrigin.getEmail());
-        client.setValid(clientOrigin.getValid());
+        client.setStatus(clientOrigin.getStatus());
     }
 }

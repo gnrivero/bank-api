@@ -2,6 +2,7 @@ package com.integracion.bankapi.model;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,12 +18,12 @@ public class Client {
     private Integer dni;
     private String cuil;
     private String email;
-    private Boolean valid;
+    private Boolean status;
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "client_id")
-    private List<Account> accounts;
+    @OneToMany( mappedBy = "client" , fetch = FetchType.LAZY,
+            cascade= CascadeType.ALL, orphanRemoval = true)
+    private List<Account> accounts = new ArrayList<>();
 
     public Client() {
     }
@@ -75,10 +76,6 @@ public class Client {
         this.cuil = cuil;
     }
 
-    public Boolean getValid() { return valid; }
-
-    public void setValid(Boolean valid) { this.valid = valid; }
-
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
@@ -88,6 +85,12 @@ public class Client {
     }
 
     public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
+        this.accounts.addAll(accounts);
+        for (Account account: accounts)
+            account.setClient(this);
     }
+
+    public Boolean getStatus() { return status; }
+
+    public void setStatus(Boolean status) { this.status = status; }
 }

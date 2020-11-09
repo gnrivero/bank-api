@@ -29,16 +29,22 @@ public class ClientController {
     public ResponseEntity<?> getClientByDni(@PathVariable Integer dni){
 
         ClientDTO client = service.getClientByDni(dni);
-
-        return ResponseEntity.ok(client);
+        if (client == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else{
+            return ResponseEntity.ok(client);
+        }
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<?> edit(@RequestBody ClientDTO client){
+    public ResponseEntity<?> edit(@RequestBody ClientDTO clientEdit){
 
-        ClientDTO clientEdit = service.edit(client);
-
-        return ResponseEntity.ok(clientEdit);
+        ClientDTO client = service.edit(clientEdit);
+        if (client == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else{
+            return ResponseEntity.ok(client);
+        }
     }
 
 
