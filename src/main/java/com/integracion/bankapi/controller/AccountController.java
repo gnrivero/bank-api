@@ -33,7 +33,7 @@ public class AccountController {
         return new ResponseEntity<AccountDTO>(createdAccount, HttpStatus.CREATED);
     }
 
-    @GetMapping("/search/id/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getAccountById(@PathVariable Integer id){
 
         AccountDTO account = service.getAccountById(id);
