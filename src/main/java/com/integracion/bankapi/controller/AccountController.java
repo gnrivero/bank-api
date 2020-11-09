@@ -55,15 +55,5 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/search/client/{idClient}")
-    public ResponseEntity<List<?>> getAccountByIdClient(@PathVariable Integer idClient){
 
-        List<AccountDTO> accounts = service.getAccountByIdClient(idClient);
-        if (accounts == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity(accounts,HttpStatus.OK);
-
-        }
-    }
 }
