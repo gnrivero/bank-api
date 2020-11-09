@@ -65,7 +65,7 @@ public class AccountService {
     }
 
     public List<AccountDTO> getAccountByIdClient(Integer idClient){
-        List<Account> accountsRepo = repo.findByClient(idClient);
+        List<Account> accountsRepo = repo.getAccountByClient(idClient);
         List<AccountDTO> accounts;
         if(accountsRepo != null){
             accounts = new ArrayList<AccountDTO>();

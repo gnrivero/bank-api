@@ -4,6 +4,7 @@ package com.integracion.bankapi.repository;
 import com.integracion.bankapi.model.Account;
 import com.integracion.bankapi.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,5 +14,8 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Account findByIdentificationNumber(String identificationNumber);
 
-    List<Account> findByClient(Integer clientId);
+
+    @Query(value = "select * from accounts a where a.client_id =  ?1",
+            nativeQuery = true)
+    List<Account> getAccountByClient(Integer id);
 }
