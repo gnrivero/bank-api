@@ -6,6 +6,7 @@ import com.integracion.bankapi.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ public class AccountService {
 
     public AccountDTO create(AccountDTO accountDTO)
     {
+        if(Arrays.stream(AccountType.values()).filter(x->x.getShortName()==accountDTO.getAccountType()).count() !=0){
         Optional<Client> clientRepo = repoClient.findById(accountDTO.getClientId());
         Account account = new Account();
         mapping(accountDTO,account);
@@ -36,6 +38,10 @@ public class AccountService {
         }
         mapping(account,accountDTO);
         return accountDTO;
+        }
+        else{
+            return null;
+        }
     }
 
     public AccountDTO getAccountById(Integer id){
