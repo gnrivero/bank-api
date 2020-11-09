@@ -8,7 +8,7 @@ spring:
 # JPA
   jpa:
    show-sql: true
-   generate-ddl: true #primera ejecucion debe estar en true, el resto false
+   generate-ddl: false #primera ejecucion debe estar en true, el resto false
    properties-hibernate:
     format_sql: true
     dialect: org.hibernate.dialect.MySQL8Dialect

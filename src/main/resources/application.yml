@@ -1,5 +1,15 @@
-# DataSource
 spring:
+ # Object Mapper
+ jackson:
+   property-naming-strategy: SNAKE_CASE
+   serialization:
+     write-dates-as-timestamps: false
+   default-property-inclusion: non_null
+   deserialization:
+     read-unknown-enum-values-using-default-value: true
+   mapper:
+     accept-case-insensitive-enums: true
+ # DataSource
  datasource:
   url: jdbc:mysql://yhrz9vns005e0734.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/uf407xfptfb5yyjg?serverTimezone=GMT-3
   username: uoasee87o2ae8h9l
@@ -10,7 +20,6 @@ spring:
    max-active: 6
    max-idle: 5
    min-idle: 2
-
 # JPA
   jpa:
    show-sql: true
@@ -20,17 +29,6 @@ spring:
     dialect: org.hibernate.dialect.MySQL8Dialect
    hibernate:
     use-new-id-generator-mappings: false
-# Object Mapper
-  jackson:
-   property-naming-strategy: SNAKE_CASE
-   serialization:
-    write-dates-as-timestamps: false
-   default-property-inclusion: non_null
-   deserialization:
-    read-unknown-enum-values-using-default-value: true
-   mapper:
-    accept-case-insensitive-enums: true
-
 # Ajustes de nivel de logging
 logging:
  level:
