@@ -16,5 +16,5 @@ Simplemente correr la aplicacion sin perfil activo.
 
 <b>Desde línea de comandos</b>
 
-Profile Local: ./gradlew bootRun --args='--spring.profiles.active=local'
-Profile Default: ./gradlew bootRun
+Profile Local: ./gradlew bootRun --args='--spring.profiles.active=local'<br>
+Profile Default: ./gradlew bootRun<br>
