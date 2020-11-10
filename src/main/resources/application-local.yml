@@ -1,0 +1,16 @@
+# DataSource
+spring:
+  datasource:
+   url: jdbc:mysql://localhost:3306/bank-db?serverTimezone=GMT-3
+   username: root
+   password: password
+   driver-class-name: com.mysql.cj.jdbc.Driver
+# JPA
+  jpa:
+   show-sql: true
+   generate-ddl: false #primera ejecucion debe estar en true, el resto false
+   properties-hibernate:
+    format_sql: true
+    dialect: org.hibernate.dialect.MySQL8Dialect
+   hibernate:
+    use-new-id-generator-mappings: false
