@@ -11,5 +11,10 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+
+
+    @Query(value = "select * from transactions t where t.account_id =  ?1 ORDER BY date DESC ",
+            nativeQuery = true)
+    List<Transaction> getTransactionByAccount(Integer id);
 }
 
