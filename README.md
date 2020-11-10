@@ -8,8 +8,8 @@ El perfil local ejecuta una base de datos local MySQL.
 
 <b>Desde IJ Idea</b>
 
-Paso 1: Ir al menu Run > Edit Configurations > Environment Variables agregar SPRING_PROFILES_ACTIVE=local
-Paso 2: Botón derecho sobre la clase Application.java, seleccionar "Run 'Application.main()'"
+Paso 1: Ir al menu Run > Edit Configurations > Environment Variables agregar SPRING_PROFILES_ACTIVE=local<br>
+Paso 2: Botón derecho sobre la clase Application.java, seleccionar "Run 'Application.main()'"<br>
 
 <b>Desde línea de comandos</b>
  
