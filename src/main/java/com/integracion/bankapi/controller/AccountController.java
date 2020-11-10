@@ -1,11 +1,9 @@
 package com.integracion.bankapi.controller;
 
-
-import com.integracion.bankapi.model.Account;
 import com.integracion.bankapi.model.AccountDTO;
-import com.integracion.bankapi.model.Client;
-import com.integracion.bankapi.model.ClientDTO;
+import com.integracion.bankapi.model.TransactionAccountDTO;
 import com.integracion.bankapi.service.AccountService;
+import com.integracion.bankapi.service.TransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +14,13 @@ import java.util.List;
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
 
-
     private AccountService service;
+    private TransactionService transactionService;
 
-    public AccountController(AccountService service) {
+    public AccountController(AccountService service, TransactionService transactionService) {
         this.service = service;
+        this.transactionService = transactionService;
+
     }
 
     @PostMapping
@@ -52,6 +52,18 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }else{
             return ResponseEntity.ok(account);
+        }
+    }
+
+    @GetMapping("/{idAccount}/transactions")
+    public ResponseEntity<?> getTransactionByIdAccount(@PathVariable Integer idAccount){
+
+        TransactionAccountDTO transactionsAccount = transactionService.getTransactionsByIdAccount(idAccount);
+        if (transactionsAccount == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity(transactionsAccount,HttpStatus.OK);
+
         }
     }
 

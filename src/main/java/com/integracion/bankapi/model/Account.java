@@ -2,6 +2,7 @@ package com.integracion.bankapi.model;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,10 @@ public class Account {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
+
+    @OneToMany( mappedBy = "account" , fetch = FetchType.LAZY,
+            cascade= CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions = new ArrayList<>();
 
     public Account() {
     }
@@ -66,5 +71,15 @@ public class Account {
     public Client getClient() { return client; }
 
     public void setClient(Client client) { this.client = client; }
+
+    public List<Transaction> getTransactions() { return transactions; }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions.addAll(transactions);
+        for (Transaction transaction: transactions)
+            transaction.setAccount(this);
+
+        this.transactions = transactions;
+    }
 }
 
