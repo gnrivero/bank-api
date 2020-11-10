@@ -15,6 +15,8 @@ public class Transaction {
     private double amount;
     private Date date;
     private String transactionType;
+    private Boolean cash;
+    private String typeOperation;
 
     @ManyToOne
     @JoinColumn(name = "account_id")
@@ -51,4 +53,12 @@ public class Transaction {
     public Account getAccount() { return account; }
 
     public void setAccount(Account account) { this.account = account; }
+
+    public Boolean getCash() { return cash; }
+
+    public void setCash(Boolean cash) { this.cash = cash; }
+
+    public String getTypeOperation() {return typeOperation; }
+
+    public void setTypeOperation(String typeOperation) { this.typeOperation = typeOperation; }
 }
