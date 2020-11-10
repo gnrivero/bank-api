@@ -1,21 +1,14 @@
 package com.integracion.bankapi.controller;
 
-
-import com.integracion.bankapi.model.Account;
 import com.integracion.bankapi.model.AccountDTO;
-import com.integracion.bankapi.model.Client;
-import com.integracion.bankapi.model.ClientDTO;
 import com.integracion.bankapi.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
-
 
     private AccountService service;
 
