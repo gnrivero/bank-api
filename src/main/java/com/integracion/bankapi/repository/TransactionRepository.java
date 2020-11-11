@@ -1,7 +1,5 @@
 package com.integracion.bankapi.repository;
 
-
-import com.integracion.bankapi.model.Account;
 import com.integracion.bankapi.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
