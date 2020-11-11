@@ -30,7 +30,14 @@ spring:
    hibernate:
     use-new-id-generator-mappings: false
 # Ajustes de nivel de logging
+spring.http.log-request-details: false
 logging:
  level:
   root: INFO
   org.springframework.web: INFO
+  org.springframework.web.HttpLogging: INFO
+  org.springframework.security: INFO
+# Swagger
+swagger:
+  host:
+    url: https://bank-api-integrations.herokuapp.com
