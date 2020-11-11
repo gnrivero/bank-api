@@ -33,10 +33,10 @@ spring:
 spring.http.log-request-details: true
 logging:
  level:
-  root: DEBUG
-  org.springframework.web: DEBUG
-  org.springframework.web.HttpLogging: DEBUG
-  org.springframework.security: DEBUG
+  root: INFO
+  org.springframework.web: INFO
+  org.springframework.web.HttpLogging: INFO
+  org.springframework.security: INFO
 # Swagger
 swagger:
   host:
