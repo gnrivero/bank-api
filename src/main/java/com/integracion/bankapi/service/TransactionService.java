@@ -68,17 +68,14 @@ public class TransactionService {
                     //EXTRACCION
                     case "EXT":
                     {
-                        if(transaction.getCash()){
-                            //en efectivo
-                            account.setBalance(account.getBalance()-transaction.getAmount());
-                        }else{
-                            //desde una cuenta
-                            double newBalance = account.getBalance()-transaction.getAmount();
-                            //Si es una CA el destino de la operacion no puede quedar con saldo negativo
-                            if(account.getAccountType().equals("CA") && newBalance<0){
-                                return null;
-                            }
-                            account.setBalance(newBalance);
+                        double newBalance = account.getBalance()-transaction.getAmount();
+                        //Si es una CA el destino de la operacion no puede quedar con saldo negativo
+                        if(account.getAccountType().equals("CA") && newBalance<0){
+                            return null;
+                        }
+                        account.setBalance(newBalance);
+                        //desde una cuenta
+                        if(!transaction.getCash()){
                             //Ver si buscar por CBU
                             Optional<Account> accountOriginRepo = repoAccount.findById(transactionDTO.getAccountOriginId());
                             if(accountOriginRepo.isPresent()){
