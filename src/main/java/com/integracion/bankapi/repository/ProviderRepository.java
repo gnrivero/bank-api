@@ -1,19 +1,13 @@
 package com.integracion.bankapi.repository;
 
 
-import com.integracion.bankapi.model.Payment;
+import com.integracion.bankapi.model.Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-
 @Repository
-public interface PaymentRepository extends JpaRepository<Payment, Integer> {
+public interface ProviderRepository extends JpaRepository<Provider, Integer> {
 
-    Payment findByElectronicCodeAndPaidAndDateAfter(String electronicCode, Boolean paid, LocalDate date);
 /*
     @Query(value = "select * from transactions t where t.account_id =  ?1 ORDER BY date DESC ",
             nativeQuery = true)

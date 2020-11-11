@@ -1,5 +1,7 @@
 package com.integracion.bankapi.service;
 
+import com.integracion.bankapi.model.Account;
+import com.integracion.bankapi.model.AccountDTO;
 import com.integracion.bankapi.model.Client;
 import com.integracion.bankapi.model.ClientDTO;
 import com.integracion.bankapi.repository.ClientRepository;
@@ -43,6 +45,20 @@ public class ClientService {
         ClientDTO client = new ClientDTO();
         if(clientRepo != null){
             mapping(clientRepo,client);
+        }
+        else{
+            client = null;
+        }
+        return client;
+    }
+
+
+    public ClientDTO getClientById(Integer id){
+        Optional<Client> clientRepo = repo.findById(id);
+        ClientDTO client;
+        if(clientRepo.isPresent()){
+            client = new ClientDTO();
+            mapping(clientRepo.get(),client);
         }
         else{
             client = null;
