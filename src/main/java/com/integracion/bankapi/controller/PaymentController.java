@@ -38,4 +38,11 @@ public class PaymentController {
             return ResponseEntity.ok(payment);
         }
     }
+
+    @GetMapping("/generatePayments")
+    public ResponseEntity generatePayments(){
+
+        service.generatePayments();
+        return ResponseEntity.ok("ok");
+    }
 }
