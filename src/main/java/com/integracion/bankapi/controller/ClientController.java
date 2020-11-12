@@ -64,4 +64,16 @@ public class ClientController {
 
         }
     }
+
+
+    @GetMapping("/{idClient}")
+    public ResponseEntity<?> getClientById(@PathVariable Integer idClient){
+
+        ClientDTO client = service.getClientById(idClient);
+        if (client == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else{
+            return ResponseEntity.ok(client);
+        }
+    }
 }
