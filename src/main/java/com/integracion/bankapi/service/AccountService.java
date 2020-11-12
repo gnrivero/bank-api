@@ -27,11 +27,20 @@ public class AccountService {
         var type = Arrays.stream(AccountType.values()).filter(x->x.getShortName().equals(accountDTO.getAccountType())).toArray();
 
         if(type.length !=0){
-            Optional<Client> clientRepo = repoClient.findById(accountDTO.getClientId());
+            Optional<Client> clientRepo;
+            Client c = null;
+            if(accountDTO.getClientId()!=null) {
+                clientRepo = repoClient.findById(accountDTO.getClientId());
+                if(clientRepo.isPresent()){
+                    c =clientRepo.get();
+                }
+            }else{
+                c = repoClient.findByDniOrCuil(Integer.parseInt(accountDTO.getClientCuil()),accountDTO.getClientCuil());
+            }
+
             Account account = new Account();
             mapping(accountDTO,account);
-            if(clientRepo.isPresent()){
-                Client c =clientRepo.get();
+            if(c  != null){
                 account.setClient(c);
                 account = repo.save(account);
             }

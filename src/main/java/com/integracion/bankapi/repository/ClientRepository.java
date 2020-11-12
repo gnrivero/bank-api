@@ -12,6 +12,7 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
 
 
      Client findByDni(Integer dni);
+     Client findByDniOrCuil(Integer dni, String cuil);
 
 /*
 https://docs.spring.io/spring-data/jpa/docs/1.5.0.RELEASE/reference/html/jpa.repositories.html
