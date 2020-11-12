@@ -6,6 +6,7 @@ public class AccountDTO {
     private String identificationNumber;
     private String name;
     private Integer clientId;
+    private String ClientCuil;
     private double balance;
     private String accountType;
     private String accountTypeDescription;
@@ -52,4 +53,8 @@ public class AccountDTO {
     public double getOverdraft() { return overdraft; }
 
     public void setOverdraft(double overdraft) { this.overdraft = overdraft; }
+
+    public String getClientCuil() { return ClientCuil; }
+
+    public void setClientCuil(String clientCuil) { ClientCuil = clientCuil; }
 }

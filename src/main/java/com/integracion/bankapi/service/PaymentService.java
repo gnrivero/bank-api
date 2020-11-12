@@ -7,8 +7,14 @@ import com.integracion.bankapi.repository.ProviderRepository;
 import com.integracion.bankapi.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PaymentService {
@@ -129,6 +135,63 @@ public class PaymentService {
         }
         return payment;
     }
+
+    public void generatePayments(){
+        List<Provider> providers = repoProvider.findAll();
+        for (Provider provider: providers){
+            /////0002-disponible
+            Path path = Paths.get(provider.getProviderCode()+"-disponible.txt");
+
+            List<Payment> payments = new ArrayList<Payment>();
+            List<String> list = new ArrayList<>();
+
+            try (Stream<String> stream = Files.lines(path)) {
+
+                list = stream.collect(Collectors.toList());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (String l:list) {
+                Payment p = new Payment();
+
+                String[] values = l.split(",");
+                p.setElectronicCode(String.format("%6s",values[0]).replace(' ','0'));
+                p.setAmount(Double.parseDouble(values[1]));
+                p.setDate(LocalDate.parse(values[2]));
+                p.setPaid(false);
+                p.setProvider(provider);
+
+                payments.add(p);
+            }/*
+            list.forEach(x-> {
+                Payment p = new Payment();
+
+                String[] values = x.split(",");
+                p.setElectronicCode(String.format("%06d", values[0]) );
+                p.setAmount(Double.parseDouble(values[1]));
+                p.setDate(LocalDate.parse(values[2]));
+                p.setProvider(provider);
+
+                payments.add(p);
+            });*/
+            if(list.toArray().length !=0) {
+                repo.removeExpired(provider.getId());
+                repo.saveAll(payments);
+                try{
+                    // rename a file in the same directory
+                    Files.move(path, Paths.get(provider.getProviderCode() + "-disponible" + LocalDate.now() + ".txt"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                // rename a file in the same directory
+            }
+
+        }
+
+
+    }
+
 
     private void mapping (PaymentDTO paymentOrigin, Payment payment){
         payment.setId(paymentOrigin.getId());
