@@ -42,8 +42,8 @@ public class PaymentService {
                 return null;
             }
             Account accountProvider = payment.getProvider().getAccount();
-            //TODO ver de donde sacamos el id de la cuenta del banco
-            Optional<Account> accountBankRepo = repoAccount.findById(1);
+            //TODO ver de donde sacamos el id de la cuenta del banco (en el server el cliente id 1 tiene la cuenta id:10)
+            Optional<Account> accountBankRepo = repoAccount.findById(10);
             Account accountBank = accountBankRepo.get();
 
 
