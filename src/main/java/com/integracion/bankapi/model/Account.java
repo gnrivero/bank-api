@@ -2,6 +2,7 @@ package com.integracion.bankapi.model;
 
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +14,11 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
-    private double balance;
+    private BigDecimal balance;
     private String accountType;
     private String identificationNumber;
-    private double overdraft;
-    private Boolean status;
+    private BigDecimal overdraft;
+    private Boolean active;
 
     @ManyToOne
     @JoinColumn(name = "client_id")
@@ -38,15 +39,9 @@ public class Account {
         this.id = id;
     }
 
-    public double getBalance() { return  withMathRound(balance,2); }
+    public BigDecimal getBalance() { return  balance; }
 
-    public void setBalance(double balance) { this.balance = withMathRound(balance,2); }
-
-
-    public static double withMathRound(double value, int places) {
-        double scale = Math.pow(10, places);
-        return Math.round(value * scale) / scale;
-    }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
 
     public String getAccountType() { return accountType; }
 
@@ -60,13 +55,13 @@ public class Account {
 
     public void setName(String name) { this.name = name; }
 
-    public double getOverdraft() { return overdraft; }
+    public BigDecimal getOverdraft() { return overdraft; }
 
-    public void setOverdraft(double overdraft) { this.overdraft = overdraft; }
+    public void setOverdraft(BigDecimal overdraft) { this.overdraft = overdraft; }
 
-    public Boolean getStatus() { return status; }
+    public Boolean getActive() { return active; }
 
-    public void setStatus(Boolean status) { this.status = status; }
+    public void setActive(Boolean active) { this.active = active; }
 
     public Client getClient() { return client; }
 
@@ -76,10 +71,11 @@ public class Account {
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions.addAll(transactions);
+
         for (Transaction transaction: transactions)
             transaction.setAccount(this);
 
         this.transactions = transactions;
     }
-}
 
+}

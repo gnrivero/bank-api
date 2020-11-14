@@ -1,6 +1,7 @@
 package com.integracion.bankapi.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -12,7 +13,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String electronicCode;
-    private double amount;
+    private BigDecimal amount;
     private LocalDate date;
     private Boolean paid;
 
@@ -36,9 +37,9 @@ public class Payment {
 
     public void setElectronicCode(String electronicCode) { this.electronicCode = electronicCode; }
 
-    public double getAmount() { return  withMathRound(amount,2); }
+    public BigDecimal getAmount() { return amount; }
 
-    public void setAmount(double amount) { this.amount =  withMathRound(amount,2); }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
     public LocalDate getDate() { return date; }
 
@@ -51,6 +52,5 @@ public class Payment {
     public Provider getProvider() { return provider; }
 
     public void setProvider(Provider provider) { this.provider = provider; }
-
 
 }

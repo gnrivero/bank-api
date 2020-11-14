@@ -36,7 +36,7 @@ logging:
   root: INFO
   org.springframework.web: INFO
   org.springframework.web.HttpLogging: INFO
-  org.springframework.security: INFO
+  org.springframework.security: DEBUG
 # Swagger
 swagger:
   host:

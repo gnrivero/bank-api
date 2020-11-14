@@ -1,6 +1,6 @@
 package com.integracion.bankapi.controller;
 
-import com.integracion.bankapi.model.TransactionDTO;
+import com.integracion.bankapi.model.dto.TransactionDTO;
 import com.integracion.bankapi.service.TransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

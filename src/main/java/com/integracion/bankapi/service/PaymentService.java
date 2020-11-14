@@ -1,6 +1,7 @@
 package com.integracion.bankapi.service;
 
 import com.integracion.bankapi.model.*;
+import com.integracion.bankapi.model.dto.PaymentDTO;
 import com.integracion.bankapi.repository.AccountRepository;
 import com.integracion.bankapi.repository.PaymentRepository;
 import com.integracion.bankapi.repository.ProviderRepository;
@@ -8,6 +9,7 @@ import com.integracion.bankapi.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,8 +49,8 @@ public class PaymentService {
             Account accountBank = accountBankRepo.get();
 
 
-            double amountBank = payment.getAmount()*TransactionType.COBRANZA.getPercent()/100;
-            double amountProvider = payment.getAmount() - amountBank;
+            BigDecimal amountBank = payment.getAmount().multiply(TransactionType.COBRANZA.getPercent());
+            BigDecimal amountProvider = payment.getAmount().subtract(amountBank);
             Transaction transactionBank = new Transaction();
             transactionBank.setCash(true);
             transactionBank.setDate(new Date());
@@ -69,9 +71,9 @@ public class PaymentService {
 
             payment.setPaid(true);
 
-            double newBalanceBank =accountBank.getBalance()+transactionBank.getAmount();
+            BigDecimal newBalanceBank = accountBank.getBalance().add(transactionBank.getAmount());
             accountBank.setBalance(newBalanceBank);
-            double newBalanceProvider =accountProvider.getBalance()+transactionProvider.getAmount();
+            BigDecimal newBalanceProvider = accountProvider.getBalance().add(transactionProvider.getAmount());
             accountProvider.setBalance(newBalanceProvider);
 
             //Si es pago por cuentas
@@ -82,10 +84,10 @@ public class PaymentService {
                 if (accountRepo.isPresent()) {
                     Account accountClient = accountRepo.get();
 
-
-                    double newBalance = accountClient.getBalance()-payment.getAmount();
+                    BigDecimal newBalance = accountClient.getBalance().subtract(payment.getAmount());
                     //Si se paga desde una CA esta no puede quedar con saldo negativo
-                    if(accountClient.getAccountType().equals("CA") && newBalance<0){
+                    if(accountClient.getAccountType().equals("CA")
+                            && newBalance.compareTo(BigDecimal.ZERO) == -1){
                         return null;
                     }
                     accountClient.setBalance(newBalance);
@@ -113,8 +115,7 @@ public class PaymentService {
             repoAccount.save(accountProvider);
             repo.save(payment);
 
-            mapping(payment,paymentDTO);
-            return paymentDTO;
+            return toDTO(payment);
         }else{
             return null;
         }
@@ -127,10 +128,8 @@ public class PaymentService {
         Payment paymentRepo = repo.findByElectronicCodeAndPaidAndDateAfter(electronicCode,false,expiration);
         PaymentDTO payment;
         if(paymentRepo != null){
-            payment = new PaymentDTO();
-            mapping(paymentRepo,payment);
-        }
-        else{
+            payment = toDTO(paymentRepo);
+        } else{
             payment = null;
         }
         return payment;
@@ -157,7 +156,7 @@ public class PaymentService {
 
                 String[] values = l.split(",");
                 p.setElectronicCode(String.format("%6s",values[0]).replace(' ','0'));
-                p.setAmount(Double.parseDouble(values[1]));
+                p.setAmount(BigDecimal.valueOf(Long.parseLong(values[1])));
                 p.setDate(LocalDate.parse(values[2]));
                 p.setPaid(false);
                 p.setProvider(provider);
@@ -207,20 +206,24 @@ public class PaymentService {
     }
 
 
-    private void mapping (PaymentDTO paymentOrigin, Payment payment){
+    private Payment toPayment(PaymentDTO paymentOrigin){
+        Payment payment = new Payment();
         payment.setId(paymentOrigin.getId());
         payment.setAmount(paymentOrigin.getAmount());
         payment.setDate(paymentOrigin.getDate());
         payment.setElectronicCode(paymentOrigin.getElectronicCode());
         payment.setPaid(paymentOrigin.getPaid());
+        return payment;
     }
 
-    private void mapping (Payment paymentOrigin, PaymentDTO payment){
+    private PaymentDTO toDTO(Payment paymentOrigin){
+        PaymentDTO payment = new  PaymentDTO();
         payment.setId(paymentOrigin.getId());
         payment.setAmount(paymentOrigin.getAmount());
         payment.setDate(paymentOrigin.getDate());
         payment.setElectronicCode(paymentOrigin.getElectronicCode());
         payment.setPaid(paymentOrigin.getPaid());
+        return payment;
     }
 
 
