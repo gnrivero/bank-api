@@ -1,14 +1,11 @@
 package com.integracion.bankapi.service;
 
 import com.integracion.bankapi.model.*;
+import com.integracion.bankapi.model.dto.ProviderDTO;
 import com.integracion.bankapi.repository.AccountRepository;
-import com.integracion.bankapi.repository.ClientRepository;
 import com.integracion.bankapi.repository.ProviderRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Service

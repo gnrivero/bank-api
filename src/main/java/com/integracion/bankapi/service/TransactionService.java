@@ -1,10 +1,14 @@
 package com.integracion.bankapi.service;
 
 import com.integracion.bankapi.model.*;
+import com.integracion.bankapi.model.dto.AccountDTO;
+import com.integracion.bankapi.model.dto.TransactionAccountDTO;
+import com.integracion.bankapi.model.dto.TransactionDTO;
 import com.integracion.bankapi.repository.AccountRepository;
 import com.integracion.bankapi.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -37,10 +41,11 @@ public class TransactionService {
                     {
                         if(transaction.getCash()){
                             //en efectivo
-                            account.setBalance(account.getBalance()+transaction.getAmount());
+                            account.setBalance(account.getBalance().add(transaction.getAmount()));
                         }else{
                             //desde una cuenta
-                            account.setBalance(account.getBalance()+transaction.getAmount());
+                            BigDecimal newBalance = account.getBalance().add(transaction.getAmount());
+                            account.setBalance(newBalance);
                             //Ver si buscar por CBU
                             Optional<Account> accountOriginRepo = repoAccount.findById(transactionDTO.getAccountOriginId());
                             if(accountOriginRepo.isPresent()){
@@ -50,9 +55,10 @@ public class TransactionService {
                                 transactionOrigin.setTypeOperation("E");
                                 transactionOrigin.setAccount(accountOrigin);
                                 transactionOrigin.setDate(new Date());
-                                double newBalance=accountOrigin.getBalance()-transactionOrigin.getAmount();
+                                newBalance = accountOrigin.getBalance().subtract(transactionOrigin.getAmount());
                                 //Si es una CA el origen no puede quedar con saldo negativo
-                                if(accountOrigin.getAccountType().equals("CA") && newBalance<0){
+                                if (accountOrigin.getAccountType().equals("CA")
+                                        && newBalance.compareTo(BigDecimal.ZERO) == -1) {
                                     return null;
                                 }
                                 accountOrigin.setBalance(newBalance);
@@ -68,9 +74,10 @@ public class TransactionService {
                     //EXTRACCION
                     case "EXT":
                     {
-                        double newBalance = account.getBalance()-transaction.getAmount();
+                        BigDecimal newBalance = account.getBalance().subtract(transaction.getAmount());
                         //Si es una CA el destino de la operacion no puede quedar con saldo negativo
-                        if(account.getAccountType().equals("CA") && newBalance<0){
+                        if(account.getAccountType().equals("CA")
+                                && newBalance.compareTo(BigDecimal.ZERO) == -1) {
                             return null;
                         }
                         account.setBalance(newBalance);
@@ -85,7 +92,8 @@ public class TransactionService {
                                 transactionOrigin.setTypeOperation("I");
                                 transactionOrigin.setAccount(accountOrigin);
                                 transactionOrigin.setDate(new Date());
-                                accountOrigin.setBalance(accountOrigin.getBalance()+transactionOrigin.getAmount());
+                                newBalance = accountOrigin.getBalance().subtract(transactionOrigin.getAmount());
+                                accountOrigin.setBalance(newBalance);
                                 repo.save(transactionOrigin);
                                 repoAccount.save(accountOrigin);
                             }
@@ -174,7 +182,7 @@ public class TransactionService {
         account.setName(accountOrigin.getName());
         account.setAccountType(accountOrigin.getAccountType());
         account.setOverdraft(accountOrigin.getOverdraft());
-        account.setStatus(accountOrigin.getStatus());
+        account.setActive(accountOrigin.getActive());
     }
 
     private void mapping (Account accountOrigin, AccountDTO account){
@@ -189,7 +197,7 @@ public class TransactionService {
             account.setAccountTypeDescription(AccountType.CA.getAccountTypeName());
         }
         account.setOverdraft(accountOrigin.getOverdraft());
-        account.setStatus(accountOrigin.getStatus());
+        account.setActive(accountOrigin.getActive());
     }
 
 }

@@ -1,4 +1,4 @@
-package com.integracion.bankapi.model;
+package com.integracion.bankapi.model.dto;
 
 public class ProviderDTO {
 

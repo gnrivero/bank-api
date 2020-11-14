@@ -1,13 +1,11 @@
 package com.integracion.bankapi.service;
 
-import com.integracion.bankapi.model.Account;
-import com.integracion.bankapi.model.AccountDTO;
 import com.integracion.bankapi.model.Client;
-import com.integracion.bankapi.model.ClientDTO;
+import com.integracion.bankapi.model.dto.ClientDTO;
+import com.integracion.bankapi.model.exception.ClientNotFoundException;
 import com.integracion.bankapi.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,49 +22,48 @@ public class ClientService {
     }
 
     public ClientDTO edit(ClientDTO client) {
-
         Optional<Client> clientRepo = repo.findById(client.getId());
         if(clientRepo.isPresent()){
             Client clientEdit = new Client();
             clientEdit.setAccounts(clientRepo.get().getAccounts());
-            mapping(client,clientEdit);
-            clientEdit =repo.save(clientEdit);
-            mapping(clientEdit,client);
-        }else{
+            clientEdit = mapping(client);
+            clientEdit = repo.save(clientEdit);
+            client = mapping(clientEdit);
+        } else{
             client= null;
         }
 
         return client;
     }
 
-    public ClientDTO getClientByDni(Integer dni){
-        Client clientRepo = repo.findByDni(dni);
-        //Client clientRepo = repo.getClientByDni(dni);
-        ClientDTO client = new ClientDTO();
-        if(clientRepo != null){
-            mapping(clientRepo,client);
+    public ClientDTO getClientByDniOrCuil(String dni, String cuil){
+
+        Optional<Client> client = repo.findByDniOrCuil(dni, cuil);
+
+        if (client.isEmpty()){
+            throw new ClientNotFoundException(
+                    String.format("El cliente DNI: %s, CUIL: %s no existe", dni, cuil)
+            );
         }
-        else{
-            client = null;
-        }
-        return client;
+
+        return mapping(client.get());
     }
 
 
-    public ClientDTO getClientById(Integer id){
+    public ClientDTO getClientById(Integer id) {
         Optional<Client> clientRepo = repo.findById(id);
-        ClientDTO client;
-        if(clientRepo.isPresent()){
-            client = new ClientDTO();
-            mapping(clientRepo.get(),client);
+
+        if(clientRepo.isEmpty()){
+            throw new ClientNotFoundException(String.format("El cliente ID: %d no existe", id));
         }
-        else{
-            client = null;
-        }
+
+        ClientDTO client = mapping(clientRepo.get());
+
         return client;
     }
 
-    private void mapping (ClientDTO clientOrigin, Client client){
+    private Client mapping (ClientDTO clientOrigin){
+        Client client = new Client();
         client.setId(clientOrigin.getId());
         client.setName(clientOrigin.getName());
         client.setBusinessName(clientOrigin.getBusinessName());
@@ -75,10 +72,11 @@ public class ClientService {
         client.setLastName(clientOrigin.getLastName());
         client.setEmail(clientOrigin.getEmail());
         client.setStatus(clientOrigin.getStatus());
-
+        return client;
     }
 
-    private void mapping (Client clientOrigin, ClientDTO client){
+    private ClientDTO mapping (Client clientOrigin){
+        ClientDTO client = new ClientDTO();
         client.setId(clientOrigin.getId());
         client.setName(clientOrigin.getName());
         client.setBusinessName(clientOrigin.getBusinessName());
@@ -87,5 +85,7 @@ public class ClientService {
         client.setLastName(clientOrigin.getLastName());
         client.setEmail(clientOrigin.getEmail());
         client.setStatus(clientOrigin.getStatus());
+
+        return client;
     }
 }

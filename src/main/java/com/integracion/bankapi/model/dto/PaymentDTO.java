@@ -1,5 +1,6 @@
-package com.integracion.bankapi.model;
+package com.integracion.bankapi.model.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -10,7 +11,7 @@ public class PaymentDTO {
     private Boolean cash;
     private Integer accountId;
     private String electronicCode;
-    private double amount;
+    private BigDecimal amount;
     private Boolean paid;
     private Integer providerId;
 
@@ -38,9 +39,9 @@ public class PaymentDTO {
 
     public void setElectronicCode(String electronicCode) { this.electronicCode = electronicCode; }
 
-    public double getAmount() { return amount; }
+    public BigDecimal getAmount() { return amount; }
 
-    public void setAmount(double amount) { this.amount = amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
     public Boolean getPaid() { return paid; }
 

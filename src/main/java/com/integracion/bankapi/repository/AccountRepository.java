@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
+
     Account findByIdentificationNumber(String identificationNumber);
 
 
-    @Query(value = "select * from accounts a where a.client_id =  ?1",
-            nativeQuery = true)
+    @Query(value = "select * from accounts a where a.client_id =  ?1", nativeQuery = true)
     List<Account> getAccountByClient(Integer id);
 }
