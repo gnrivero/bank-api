@@ -192,6 +192,20 @@ public class PaymentService {
 
     }
 
+    public PaymentDTO createTest(PaymentDTO paymentDTO)
+    {
+        Payment p = new Payment();
+        p.setDate(LocalDate.now());
+        p.setPaid(false);
+        Optional<Provider> prov = repoProvider.findById(paymentDTO.getId());
+        p.setProvider(prov.get());
+        p.setAmount(paymentDTO.getAmount());
+        p.setElectronicCode(paymentDTO.getElectronicCode());
+        repo.save(p);
+        mapping(p,paymentDTO);
+        return paymentDTO;
+    }
+
 
     private void mapping (PaymentDTO paymentOrigin, Payment payment){
         payment.setId(paymentOrigin.getId());
