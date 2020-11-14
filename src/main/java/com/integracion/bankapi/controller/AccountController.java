@@ -1,14 +1,12 @@
 package com.integracion.bankapi.controller;
 
-import com.integracion.bankapi.model.AccountDTO;
-import com.integracion.bankapi.model.TransactionAccountDTO;
+import com.integracion.bankapi.model.dto.AccountDTO;
+import com.integracion.bankapi.model.dto.TransactionAccountDTO;
 import com.integracion.bankapi.service.AccountService;
 import com.integracion.bankapi.service.TransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/accounts")
@@ -26,8 +24,6 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<?> createAccount(@RequestBody AccountDTO account){
 
-        //En la creacion por las dudas le seteo el balance en 0
-        account.setBalance(0);
         AccountDTO createdAccount = service.create(account);
 
         return new ResponseEntity<AccountDTO>(createdAccount, HttpStatus.CREATED);
@@ -47,10 +43,10 @@ public class AccountController {
     @GetMapping("/search/cbu/{identificationNumber}")
     public ResponseEntity<?> getAccountByIdentificationNumber(@PathVariable String identificationNumber){
 
-        AccountDTO account = service.getAccountByIdentificationNumber(identificationNumber);
-        if (account == null){
+        AccountDTO account = null;//service.getAccountByIdentificationNumber(identificationNumber);
+        if (account == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
+        } else {
             return ResponseEntity.ok(account);
         }
     }

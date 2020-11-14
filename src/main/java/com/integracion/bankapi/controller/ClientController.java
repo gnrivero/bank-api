@@ -1,8 +1,8 @@
 package com.integracion.bankapi.controller;
 
-import com.integracion.bankapi.model.AccountDTO;
+import com.integracion.bankapi.model.dto.AccountDTO;
 import com.integracion.bankapi.model.Client;
-import com.integracion.bankapi.model.ClientDTO;
+import com.integracion.bankapi.model.dto.ClientDTO;
 import com.integracion.bankapi.service.AccountService;
 import com.integracion.bankapi.service.ClientService;
 import org.springframework.http.HttpStatus;
@@ -31,15 +31,15 @@ public class ClientController {
         return new ResponseEntity<Client>(client, HttpStatus.CREATED);
     }
 
-    @GetMapping("/search/dni/{dni}")
-    public ResponseEntity<?> getClientByDni(@PathVariable Integer dni){
+    @GetMapping("/search")
+    public ResponseEntity<?> searchClient(
+            @RequestParam(required = false) String dni,
+            @RequestParam(required = false) String cuil
+    ) {
 
-        ClientDTO client = service.getClientByDni(dni);
-        if (client == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
-            return ResponseEntity.ok(client);
-        }
+        ClientDTO client = service.getClientByDniOrCuil(dni, cuil);
+
+        return ResponseEntity.ok(client);
     }
 
     @PostMapping("/edit")
@@ -57,12 +57,8 @@ public class ClientController {
     public ResponseEntity<List<?>> getAccountByIdClient(@PathVariable Integer idClient){
 
         List<AccountDTO> accounts = accountService.getAccountByIdClient(idClient);
-        if (accounts == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity(accounts,HttpStatus.OK);
 
-        }
+        return new ResponseEntity(accounts,HttpStatus.OK);
     }
 
 
@@ -70,10 +66,8 @@ public class ClientController {
     public ResponseEntity<?> getClientById(@PathVariable Integer idClient){
 
         ClientDTO client = service.getClientById(idClient);
-        if (client == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
-            return ResponseEntity.ok(client);
-        }
+
+        return ResponseEntity.ok(client);
+
     }
 }

@@ -1,6 +1,5 @@
-package com.integracion.bankapi.model;
+package com.integracion.bankapi.model.dto;
 
-import java.util.Date;
 import java.util.List;
 
 public class TransactionAccountDTO {

@@ -1,4 +1,6 @@
-package com.integracion.bankapi.model;
+package com.integracion.bankapi.model.dto;
+
+import java.math.BigDecimal;
 
 public class AccountDTO {
 
@@ -7,11 +9,11 @@ public class AccountDTO {
     private String name;
     private Integer clientId;
     private String ClientCuil;
-    private double balance;
+    private BigDecimal balance;
     private String accountType;
     private String accountTypeDescription;
-    private double overdraft;
-    private Boolean status;
+    private BigDecimal overdraft;
+    private Boolean active;
 
     public AccountDTO() {
     }
@@ -28,9 +30,9 @@ public class AccountDTO {
 
     public void setClientId(Integer clientId) { this.clientId = clientId; }
 
-    public double getBalance() { return balance; }
+    public BigDecimal getBalance() { return balance; }
 
-    public void setBalance(double balance) { this.balance = balance; }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
 
     public String getAccountType() { return accountType; }
 
@@ -46,13 +48,13 @@ public class AccountDTO {
 
     public void setName(String name) { this.name = name; }
 
-    public Boolean getStatus() { return status; }
+    public Boolean getActive() { return active; }
 
-    public void setStatus(Boolean status) { this.status = status; }
+    public void setActive(Boolean active) { this.active = active; }
 
-    public double getOverdraft() { return overdraft; }
+    public BigDecimal getOverdraft() { return overdraft; }
 
-    public void setOverdraft(double overdraft) { this.overdraft = overdraft; }
+    public void setOverdraft(BigDecimal overdraft) { this.overdraft = overdraft; }
 
     public String getClientCuil() { return ClientCuil; }
 

@@ -1,18 +1,18 @@
 package com.integracion.bankapi.model;
 
-public enum TransactionType
-{
-    DEPOSITO("DEP","Deposito",0),
-    EXTRACCION("EXT","Extraccion",0),
-    COBRANZA("COB","Cobranza servicio e impuestos",1),
-    COMISION("COM","Comision",0);
+import java.math.BigDecimal;
 
+public enum TransactionType {
+    DEPOSITO("DEP","Deposito", BigDecimal.ZERO),
+    EXTRACCION("EXT","Extraccion",BigDecimal.ZERO),
+    COBRANZA("COB","Cobranza servicio e impuestos",BigDecimal.valueOf(0.01)),
+    COMISION("COM","Comision",BigDecimal.ZERO);
 
     private String transactionTypeName;
     private String shortName;
-    private double percent;
+    private BigDecimal percent;
 
-    private TransactionType(String shortName, String transactionTypeName, double percent){
+    private TransactionType(String shortName, String transactionTypeName, BigDecimal percent){
         this.transactionTypeName = transactionTypeName;
         this.percent = percent;
         this.shortName = shortName;
@@ -24,7 +24,7 @@ public enum TransactionType
 
     public String getTransactionTypeName() { return transactionTypeName; }
 
-    public double getPercent() { return percent; }
+    public BigDecimal getPercent() { return percent; }
 
 }
 /*

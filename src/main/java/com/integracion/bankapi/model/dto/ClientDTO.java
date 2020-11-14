@@ -1,4 +1,4 @@
-package com.integracion.bankapi.model;
+package com.integracion.bankapi.model.dto;
 
 public class ClientDTO {
 
@@ -6,7 +6,7 @@ public class ClientDTO {
     private String name;
     private String lastName;
     private String businessName;
-    private Integer dni;
+    private String dni;
     private String cuil;
     private String email;
     private Boolean status;
@@ -46,11 +46,11 @@ public class ClientDTO {
         this.businessName = businessName;
     }
 
-    public Integer getDni() {
+    public String getDni() {
         return dni;
     }
 
-    public void setDni(Integer dni) {
+    public void setDni(String dni) {
         this.dni = dni;
     }
 

@@ -1,12 +1,13 @@
-package com.integracion.bankapi.model;
+package com.integracion.bankapi.model.dto;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class TransactionDTO {
 
     private Integer id;
     private String detail;
-    private double amount;
+    private BigDecimal amount;
     private Date date;
     private String transactionType;
     private Boolean cash;
@@ -22,9 +23,9 @@ public class TransactionDTO {
 
     public void setDetail(String detail) { this.detail = detail; }
 
-    public double getAmount() { return amount; }
+    public BigDecimal getAmount() { return amount; }
 
-    public void setAmount(double amount) { this.amount = amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
     public Date getDate() { return date; }
 

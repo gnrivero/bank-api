@@ -1,14 +1,10 @@
 package com.integracion.bankapi.controller;
 
-import com.integracion.bankapi.model.*;
-import com.integracion.bankapi.service.AccountService;
-import com.integracion.bankapi.service.ClientService;
+import com.integracion.bankapi.model.dto.ProviderDTO;
 import com.integracion.bankapi.service.ProviderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/providers")
