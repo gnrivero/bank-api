@@ -18,7 +18,7 @@ public class Client {
     private String dni;
     private String cuil;
     private String email;
-    private Boolean status;
+    private Boolean active;
 
 
     @OneToMany( mappedBy = "client" , fetch = FetchType.LAZY,
@@ -90,7 +90,7 @@ public class Client {
             account.setClient(this);
     }
 
-    public Boolean getStatus() { return status; }
+    public Boolean getActive() { return active; }
 
-    public void setStatus(Boolean status) { this.status = status; }
+    public void setActive(Boolean active) { this.active = active; }
 }

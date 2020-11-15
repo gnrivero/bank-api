@@ -1,11 +1,14 @@
 package com.integracion.bankapi.service;
 
-import com.integracion.bankapi.model.*;
+import com.integracion.bankapi.model.Account;
+import com.integracion.bankapi.model.AccountType;
+import com.integracion.bankapi.model.Client;
 import com.integracion.bankapi.model.cbu.Cbu;
 import com.integracion.bankapi.model.dto.AccountDTO;
 import com.integracion.bankapi.model.exception.AccountNotFoundException;
 import com.integracion.bankapi.model.exception.ClientNotFoundException;
 import com.integracion.bankapi.model.exception.InvalidAccountType;
+import com.integracion.bankapi.model.mapper.AccountMapper;
 import com.integracion.bankapi.repository.AccountRepository;
 import com.integracion.bankapi.repository.ClientRepository;
 import org.springframework.stereotype.Service;
@@ -21,10 +24,15 @@ public class AccountService {
 
     private AccountRepository accountRepo;
     private ClientRepository clientRepo;
+    private AccountMapper mapper;
 
-    public AccountService (AccountRepository accountRepo, ClientRepository clientRepo){
+    public AccountService (
+            AccountRepository accountRepo,
+            ClientRepository clientRepo,
+            AccountMapper mapper) {
         this.accountRepo = accountRepo;
         this.clientRepo = clientRepo;
+        this.mapper = mapper;
     }
 
     public AccountDTO create(AccountDTO accountDTO) {
@@ -42,12 +50,14 @@ public class AccountService {
         accountDTO.setActive(true);
         //Account Config
 
-        Account account = toAccount(accountDTO);
+        Account account = mapper.toAccount(accountDTO);
 
-        Optional<Client> client = clientRepo.findById(accountDTO.getClientId());
+        Optional<Client> client = this.clientRepo.findByCuil(accountDTO.getClientCuil());
 
         if (client.isEmpty())
-            throw new ClientNotFoundException("Cliente no encontrado");
+            throw new ClientNotFoundException(
+                    String.format("El Cliente con CUIL: %s no existe", accountDTO.getClientCuil())
+            );
 
         account.setClient(client.get());
         account = accountRepo.save(account);
@@ -56,7 +66,7 @@ public class AccountService {
         account.setIdentificationNumber(cbu);
         account = accountRepo.save(account);
 
-        return toDTO(account);
+        return mapper.toDTO(account);
     }
 
     public AccountDTO getAccountById(Integer id){
@@ -66,7 +76,7 @@ public class AccountService {
         if (account.isEmpty())
             throw new AccountNotFoundException();
 
-        return toDTO(account.get());
+        return mapper.toDTO(account.get());
     }
 
     public AccountDTO getAccountByIdentificationNumber(String identificationNumber){
@@ -75,7 +85,7 @@ public class AccountService {
         if (account.isEmpty())
             throw new AccountNotFoundException();
 
-        return toDTO(account.get());
+        return mapper.toDTO(account.get());
     }
 
     public List<AccountDTO> getAccountByIdClient(Integer idClient) {
@@ -84,42 +94,13 @@ public class AccountService {
 
         List<AccountDTO> accountDTOs = new ArrayList<AccountDTO>();
 
-        accounts.forEach(a -> accountDTOs.add(toDTO(a)));
+        accounts.forEach(a -> accountDTOs.add(mapper.toDTO(a)));
 
         return accountDTOs;
     }
 
-
-    private Account toAccount(AccountDTO accountOrigin) {
-        Account account = new Account();
-        account.setId(accountOrigin.getId());
-        account.setIdentificationNumber(accountOrigin.getIdentificationNumber());
-        account.setBalance(accountOrigin.getBalance());
-        account.setName(accountOrigin.getName());
-        account.setAccountType(accountOrigin.getAccountType());
-        account.setOverdraft(accountOrigin.getOverdraft());
-        account.setActive(accountOrigin.getActive());
-        return account;
+    public Integer patchAccount(BigDecimal overdraft, Integer id) {
+        return accountRepo.updateAccountOverdraft(overdraft, id);
     }
-
-    private AccountDTO toDTO(Account accountOrigin) {
-
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setId(accountOrigin.getId());
-        accountDTO.setIdentificationNumber(accountOrigin.getIdentificationNumber());
-        accountDTO.setBalance(accountOrigin.getBalance());
-        accountDTO.setName(accountOrigin.getName());
-        accountDTO.setAccountType(accountOrigin.getAccountType());
-        if("CC".compareTo(accountOrigin.getAccountType()) == 0) {
-            accountDTO.setAccountTypeDescription(AccountType.CC.getAccountTypeName());
-        } else if ("CA".compareTo(accountOrigin.getAccountType()) == 0){
-            accountDTO.setAccountTypeDescription(AccountType.CA.getAccountTypeName());
-        }
-        accountDTO.setOverdraft(accountOrigin.getOverdraft());
-        accountDTO.setActive(accountOrigin.getActive());
-
-        return accountDTO;
-    }
-
 
 }

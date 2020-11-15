@@ -9,7 +9,7 @@ public class ClientDTO {
     private String dni;
     private String cuil;
     private String email;
-    private Boolean status;
+    private Boolean active;
 
     public ClientDTO() {
     }
@@ -62,9 +62,9 @@ public class ClientDTO {
         this.cuil = cuil;
     }
 
-    public Boolean getStatus() { return status; }
+    public Boolean getActive() { return active; }
 
-    public void setStatus(Boolean status) { this.status = status; }
+    public void setActive(Boolean active) { this.active = active; }
 
     public String getEmail() { return email; }
 

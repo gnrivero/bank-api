@@ -3,6 +3,7 @@ package com.integracion.bankapi.service;
 import com.integracion.bankapi.model.Client;
 import com.integracion.bankapi.model.dto.ClientDTO;
 import com.integracion.bankapi.model.exception.ClientNotFoundException;
+import com.integracion.bankapi.model.mapper.ClientMapper;
 import com.integracion.bankapi.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,28 +13,16 @@ import java.util.Optional;
 public class ClientService {
 
     private ClientRepository repo;
+    private ClientMapper mapper;
 
-    public ClientService (ClientRepository repo){
+    public ClientService (ClientRepository repo, ClientMapper mapper){
         this.repo = repo;
+        this.mapper = mapper;
     }
 
     public Client create(Client client) {
+        client.setActive(true);
         return repo.save(client);
-    }
-
-    public ClientDTO edit(ClientDTO client) {
-        Optional<Client> clientRepo = repo.findById(client.getId());
-        if(clientRepo.isPresent()){
-            Client clientEdit = new Client();
-            clientEdit.setAccounts(clientRepo.get().getAccounts());
-            clientEdit = mapping(client);
-            clientEdit = repo.save(clientEdit);
-            client = mapping(clientEdit);
-        } else{
-            client= null;
-        }
-
-        return client;
     }
 
     public ClientDTO getClientByDniOrCuil(String dni, String cuil){
@@ -46,7 +35,7 @@ public class ClientService {
             );
         }
 
-        return mapping(client.get());
+        return mapper.toDto(client.get());
     }
 
 
@@ -57,35 +46,9 @@ public class ClientService {
             throw new ClientNotFoundException(String.format("El cliente ID: %d no existe", id));
         }
 
-        ClientDTO client = mapping(clientRepo.get());
+        ClientDTO client = mapper.toDto(clientRepo.get());
 
         return client;
     }
 
-    private Client mapping (ClientDTO clientOrigin){
-        Client client = new Client();
-        client.setId(clientOrigin.getId());
-        client.setName(clientOrigin.getName());
-        client.setBusinessName(clientOrigin.getBusinessName());
-        client.setCuil(clientOrigin.getCuil());
-        client.setDni(clientOrigin.getDni());
-        client.setLastName(clientOrigin.getLastName());
-        client.setEmail(clientOrigin.getEmail());
-        client.setStatus(clientOrigin.getStatus());
-        return client;
-    }
-
-    private ClientDTO mapping (Client clientOrigin){
-        ClientDTO client = new ClientDTO();
-        client.setId(clientOrigin.getId());
-        client.setName(clientOrigin.getName());
-        client.setBusinessName(clientOrigin.getBusinessName());
-        client.setCuil(clientOrigin.getCuil());
-        client.setDni(clientOrigin.getDni());
-        client.setLastName(clientOrigin.getLastName());
-        client.setEmail(clientOrigin.getEmail());
-        client.setStatus(clientOrigin.getStatus());
-
-        return client;
-    }
 }
