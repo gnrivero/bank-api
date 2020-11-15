@@ -42,6 +42,14 @@ public class ProviderService {
         }
     }
 
+    public void delete(Integer idProvider)
+    {
+        Optional<Provider> provider = repo.findById(idProvider);
+        if(provider.isPresent()){
+            repo.delete(provider.get());
+        }
+    }
+
 /*
     public ProviderDTO edit(ProviderDTO p) {
 
