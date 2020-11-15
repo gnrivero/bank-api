@@ -69,13 +69,14 @@ public class AccountService {
         return toDTO(account.get());
     }
 
-    /*public AccountDTO getAccountByIdentificationNumber(String identificationNumber){
-        Account account = this.accountRepo.findByIdentificationNumber(identificationNumber);
+    public AccountDTO getAccountByIdentificationNumber(String identificationNumber){
+        Optional<Account> account = this.accountRepo.findByIdentificationNumber(identificationNumber);
+
         if (account.isEmpty())
             throw new AccountNotFoundException();
 
         return toDTO(account.get());
-    }*/
+    }
 
     public List<AccountDTO> getAccountByIdClient(Integer idClient) {
 

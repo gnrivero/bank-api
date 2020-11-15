@@ -11,9 +11,8 @@ public class TransactionDTO {
     private Date date;
     private String transactionType;
     private Boolean cash;
-    private String typeOperation;
+    private String operationType;
     private Integer accountId;
-    private Integer accountOriginId;
 
     public Integer getId() { return id; }
 
@@ -39,13 +38,9 @@ public class TransactionDTO {
 
     public void setAccountId(Integer accountId) { this.accountId = accountId; }
 
-    public Integer getAccountOriginId() { return accountOriginId; }
+    public String getOperationType() { return operationType; }
 
-    public void setAccountOriginId(Integer accountOriginId) { this.accountOriginId = accountOriginId; }
-
-    public String getTypeOperation() { return typeOperation; }
-
-    public void setTypeOperation(String typeOperation) { this.typeOperation = typeOperation; }
+    public void setOperationType(String operationType) { this.operationType = operationType; }
 
     public Boolean getCash() { return cash; }
 

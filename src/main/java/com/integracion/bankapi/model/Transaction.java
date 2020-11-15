@@ -17,7 +17,7 @@ public class Transaction {
     private Date date;
     private String transactionType;
     private Boolean cash;
-    private String typeOperation;
+    private String operationType;
 
     @ManyToOne
     @JoinColumn(name = "account_id")
@@ -59,7 +59,7 @@ public class Transaction {
 
     public void setCash(Boolean cash) { this.cash = cash; }
 
-    public String getTypeOperation() {return typeOperation; }
+    public String getOperationType() {return operationType; }
 
-    public void setTypeOperation(String typeOperation) { this.typeOperation = typeOperation; }
+    public void setOperationType(String operationType) { this.operationType = operationType; }
 }
