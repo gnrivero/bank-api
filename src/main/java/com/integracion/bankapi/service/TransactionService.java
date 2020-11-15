@@ -4,6 +4,7 @@ import com.integracion.bankapi.model.*;
 import com.integracion.bankapi.model.dto.AccountDTO;
 import com.integracion.bankapi.model.dto.TransactionAccountDTO;
 import com.integracion.bankapi.model.dto.TransactionDTO;
+import com.integracion.bankapi.model.mapper.TransactionMapper;
 import com.integracion.bankapi.repository.AccountRepository;
 import com.integracion.bankapi.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
@@ -14,123 +15,69 @@ import java.util.*;
 @Service
 public class TransactionService {
 
+    private LimitValidator limitValidator;
     private TransactionRepository repo;
-    private AccountRepository repoAccount;
+    private AccountRepository accountRepo;
+    private TransactionMapper mapper;
 
-    public TransactionService (TransactionRepository repo, AccountRepository repoAccount){
+    public TransactionService (
+            TransactionRepository repo,
+            AccountRepository accountRepo,
+            LimitValidator limitValidator,
+            TransactionMapper mapper
+    ){
         this.repo = repo;
-        this.repoAccount = repoAccount;
+        this.accountRepo = accountRepo;
+        this.limitValidator = limitValidator;
+        this.mapper = mapper;
     }
 
+    public TransactionDTO createWithdraw(TransactionDTO transactionDTO) {
 
-    public TransactionDTO create(TransactionDTO transactionDTO)
-    {
-        var type = Arrays.stream(TransactionType.values()).filter(x->x.getShortName().equals(transactionDTO.getTransactionType())).toArray();
-        if(type.length !=0) {
-            Optional<Account> accountRepo = repoAccount.findById(transactionDTO.getAccountId());
-            Transaction transaction = new Transaction();
-            mapping(transactionDTO, transaction);
-            if (accountRepo.isPresent()) {
-                Account account = accountRepo.get();
-                transaction.setAccount(account);
-                transaction.setDate(new Date());
-                switch(transaction.getTransactionType())
-                {
-                    //DEPOSITO
-                    case "DEP":
-                    {
-                        if(transaction.getCash()){
-                            //en efectivo
-                            account.setBalance(account.getBalance().add(transaction.getAmount()));
-                        }else{
-                            //desde una cuenta
-                            BigDecimal newBalance = account.getBalance().add(transaction.getAmount());
-                            account.setBalance(newBalance);
-                            //Ver si buscar por CBU
-                            Optional<Account> accountOriginRepo = repoAccount.findById(transactionDTO.getAccountOriginId());
-                            if(accountOriginRepo.isPresent()){
-                                Account accountOrigin =accountOriginRepo.get();
-                                Transaction transactionOrigin = new Transaction();
-                                mapping(transactionDTO,transactionOrigin);
-                                transactionOrigin.setTypeOperation("E");
-                                transactionOrigin.setAccount(accountOrigin);
-                                transactionOrigin.setDate(new Date());
-                                newBalance = accountOrigin.getBalance().subtract(transactionOrigin.getAmount());
-                                //Si es una CA el origen no puede quedar con saldo negativo
-                                if (accountOrigin.getAccountType().equals("CA")
-                                        && newBalance.compareTo(BigDecimal.ZERO) == -1) {
-                                    return null;
-                                }
-                                accountOrigin.setBalance(newBalance);
-                                repo.save(transactionOrigin);
-                                repoAccount.save(accountOrigin);
-                            }
-                            else {
-                                return null;
-                            }
-                        }
-                        break;
-                    }
-                    //EXTRACCION
-                    case "EXT":
-                    {
-                        BigDecimal newBalance = account.getBalance().subtract(transaction.getAmount());
-                        //Si es una CA el destino de la operacion no puede quedar con saldo negativo
-                        if(account.getAccountType().equals("CA")
-                                && newBalance.compareTo(BigDecimal.ZERO) == -1) {
-                            return null;
-                        }
-                        account.setBalance(newBalance);
-                        //desde una cuenta
-                        if(!transaction.getCash()){
-                            //Ver si buscar por CBU
-                            Optional<Account> accountOriginRepo = repoAccount.findById(transactionDTO.getAccountOriginId());
-                            if(accountOriginRepo.isPresent()){
-                                Account accountOrigin =accountOriginRepo.get();
-                                Transaction transactionOrigin = new Transaction();
-                                mapping(transactionDTO,transactionOrigin);
-                                transactionOrigin.setTypeOperation("I");
-                                transactionOrigin.setAccount(accountOrigin);
-                                transactionOrigin.setDate(new Date());
-                                newBalance = accountOrigin.getBalance().subtract(transactionOrigin.getAmount());
-                                accountOrigin.setBalance(newBalance);
-                                repo.save(transactionOrigin);
-                                repoAccount.save(accountOrigin);
-                            }
-                            else {
-                                return null;
-                            }
-                        }
-                        break;
-                    }
-                    case "COB":
-                    {
-                        break;
-                    }
-                    case "COM":
-                    {
-                        break;
-                    }
-                    default:{
-                        return null;
-                    }
-                }
-                transaction = repo.save(transaction);
-                repoAccount.save(account);
-                mapping(transaction, transactionDTO);
-                return transactionDTO;
+        Optional<Account> accountFromRepo = accountRepo.findById(transactionDTO.getAccountId());
+        Account account = accountFromRepo.get();
 
-            }else{
-                return null;
-            }
-        }
-        else{
-            return null;
-        }
+        transactionDTO.setTransactionType(TransactionType.WITHDRAW.getShortName());
+        transactionDTO.setOperationType("EXPENDITURE");
+        transactionDTO.setDate(new Date());
+
+        Transaction transaction = mapper.toTransaction(transactionDTO);
+        transaction.setAccount(account);
+
+        limitValidator.validateAccountLimit(account, transaction.getAmount());
+
+        BigDecimal newBalance = account.getBalance().subtract(transaction.getAmount());
+        account.setBalance(newBalance);
+
+        accountRepo.save(account);
+        repo.save(transaction);
+
+        return mapper.toDTO(transaction);
+    }
+
+    public TransactionDTO createDeposit(TransactionDTO transactionDTO) {
+
+        Optional<Account> accountFromRepo = accountRepo.findById(transactionDTO.getAccountId());
+        Account account = accountFromRepo.get();
+
+        transactionDTO.setTransactionType(TransactionType.DEPOSIT.getShortName());
+        transactionDTO.setOperationType("INCOME");
+        transactionDTO.setDate(new Date());
+
+        Transaction transaction = mapper.toTransaction(transactionDTO);
+        transaction.setAccount(account);
+
+        BigDecimal newBalance = account.getBalance().add(transaction.getAmount());
+        account.setBalance(newBalance);
+
+        accountRepo.save(account);
+        repo.save(transaction);
+
+        return mapper.toDTO(transaction);
     }
 
     public TransactionAccountDTO getTransactionsByIdAccount(Integer idAccount){
-        Optional<Account> accountRepo = repoAccount.findById(idAccount);
+        Optional<Account> accountRepo = this.accountRepo.findById(idAccount);
         if (accountRepo.isPresent()) {
             Account account = accountRepo.get();
             TransactionAccountDTO transactionAccountDTO = new TransactionAccountDTO();
@@ -142,8 +89,7 @@ public class TransactionService {
             if (transactionsRepo != null) {
                 transactionsDTO = new ArrayList<TransactionDTO>();
                 for (Transaction transaction : transactionsRepo) {
-                    TransactionDTO transactionDTO = new TransactionDTO();
-                    mapping(transaction, transactionDTO);
+                    TransactionDTO transactionDTO = mapper.toDTO(transaction);
                     transactionsDTO.add(transactionDTO);
                 }
                 transactionAccountDTO.setTransactions(transactionsDTO);
@@ -154,25 +100,6 @@ public class TransactionService {
         }else{
             return null;
         }
-    }
-
-    private void mapping (TransactionDTO transactionOrigin, Transaction transaction){
-        transaction.setId(transactionOrigin.getId());
-        transaction.setAmount(transactionOrigin.getAmount());
-        transaction.setDetail(transactionOrigin.getDetail());
-        transaction.setTransactionType(transactionOrigin.getTransactionType());
-        transaction.setCash(transactionOrigin.getCash());
-        transaction.setTypeOperation(transactionOrigin.getTypeOperation());
-    }
-
-    private void mapping (Transaction transactionOrigin, TransactionDTO transaction){
-        transaction.setId(transactionOrigin.getId());
-        transaction.setAmount(transactionOrigin.getAmount());
-        transaction.setDetail(transactionOrigin.getDetail());
-        transaction.setTransactionType(transactionOrigin.getTransactionType());
-        transaction.setDate(transactionOrigin.getDate());
-        transaction.setCash(transactionOrigin.getCash());
-        transaction.setTypeOperation(transactionOrigin.getTypeOperation());
     }
 
     private void mapping (AccountDTO accountOrigin, Account account){

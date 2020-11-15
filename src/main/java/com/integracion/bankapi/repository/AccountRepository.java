@@ -8,12 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
 
-    Account findByIdentificationNumber(String identificationNumber);
+    @Query(value = "select * from accounts a where a.identification_number = ?1", nativeQuery = true)
+    Optional<Account> findByIdentificationNumber(String identificationNumber);
 
 
     @Query(value = "select * from accounts a where a.client_id =  ?1", nativeQuery = true)

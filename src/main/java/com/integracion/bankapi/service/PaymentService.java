@@ -49,14 +49,14 @@ public class PaymentService {
             Account accountBank = accountBankRepo.get();
 
 
-            BigDecimal amountBank = payment.getAmount().multiply(TransactionType.COBRANZA.getPercent());
+            BigDecimal amountBank = payment.getAmount().multiply(TransactionType.SERVICE_PAYMENT.getPercent());
             BigDecimal amountProvider = payment.getAmount().subtract(amountBank);
             Transaction transactionBank = new Transaction();
             transactionBank.setCash(true);
             transactionBank.setDate(new Date());
             transactionBank.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
             transactionBank.setTransactionType("COB");
-            transactionBank.setTypeOperation("I");
+            transactionBank.setOperationType("I");
             transactionBank.setAccount(accountBank);
             transactionBank.setAmount(amountBank);
 
@@ -65,7 +65,7 @@ public class PaymentService {
             transactionProvider.setDate(new Date());
             transactionProvider.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
             transactionProvider.setTransactionType("COB");
-            transactionProvider.setTypeOperation("I");
+            transactionProvider.setOperationType("I");
             transactionProvider.setAccount(accountProvider);
             transactionProvider.setAmount(amountProvider);
 
@@ -97,7 +97,7 @@ public class PaymentService {
                     transactionClient.setDate(new Date());
                     transactionClient.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
                     transactionClient.setTransactionType("COB");
-                    transactionClient.setTypeOperation("E");
+                    transactionClient.setOperationType("E");
                     transactionClient.setAccount(accountClient);
                     transactionClient.setAmount(payment.getAmount());
 

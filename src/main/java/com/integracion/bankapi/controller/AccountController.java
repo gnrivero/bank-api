@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
@@ -33,22 +35,16 @@ public class AccountController {
     public ResponseEntity<?> getAccountById(@PathVariable Integer id){
 
         AccountDTO account = service.getAccountById(id);
-        if (account == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
-            return ResponseEntity.ok(account);
-        }
+
+        return ResponseEntity.ok(account);
     }
 
     @GetMapping("/search/cbu/{identificationNumber}")
     public ResponseEntity<?> getAccountByIdentificationNumber(@PathVariable String identificationNumber){
 
-        AccountDTO account = null;//service.getAccountByIdentificationNumber(identificationNumber);
-        if (account == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return ResponseEntity.ok(account);
-        }
+        AccountDTO account = service.getAccountByIdentificationNumber(identificationNumber);
+
+        return ResponseEntity.ok(account);
     }
 
     @GetMapping("/{idAccount}/transactions")
@@ -62,6 +58,5 @@ public class AccountController {
 
         }
     }
-
 
 }

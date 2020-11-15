@@ -1,5 +1,6 @@
 package com.integracion.bankapi.model.exception.handler;
 
+import com.integracion.bankapi.model.exception.AccountLimitSurpassedException;
 import com.integracion.bankapi.model.exception.ClientNotFoundException;
 import com.integracion.bankapi.model.exception.InvalidAccountType;
 import com.integracion.bankapi.model.exception.ProblemDetail;
@@ -16,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ResponseHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({ InvalidAccountType.class})
+    @ExceptionHandler({ InvalidAccountType.class, AccountLimitSurpassedException.class})
     public ResponseEntity<Object> handleInvalidAccountTypeException(final Exception e) {
         return new ResponseEntity<>(new ProblemDetail(e.getMessage()),null, HttpStatus.BAD_REQUEST);
     }
