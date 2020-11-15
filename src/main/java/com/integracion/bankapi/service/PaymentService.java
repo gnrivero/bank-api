@@ -168,7 +168,7 @@ public class PaymentService {
                 payments.add(p);
             }
             if(list.toArray().length !=0) {
-                repo.removeExpired(provider.getId());
+                repo.removeExpired(provider.getId(),false);
                 repo.saveAll(payments);
                 try{
                     // rename a file in the same directory
