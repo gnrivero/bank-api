@@ -196,13 +196,12 @@ public class PaymentService {
         Payment p = new Payment();
         p.setDate(LocalDate.now());
         p.setPaid(false);
-        Optional<Provider> prov = repoProvider.findById(paymentDTO.getId());
+        Optional<Provider> prov = repoProvider.findById(paymentDTO.getProviderId());
         p.setProvider(prov.get());
         p.setAmount(paymentDTO.getAmount());
         p.setElectronicCode(paymentDTO.getElectronicCode());
         repo.save(p);
-        mapping(p,paymentDTO);
-        return paymentDTO;
+        return toDTO(p);
     }
 
 
@@ -223,6 +222,7 @@ public class PaymentService {
         payment.setDate(paymentOrigin.getDate());
         payment.setElectronicCode(paymentOrigin.getElectronicCode());
         payment.setPaid(paymentOrigin.getPaid());
+        payment.setProviderName(paymentOrigin.getProvider().getName());
         return payment;
     }
 

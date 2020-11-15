@@ -46,8 +46,7 @@ public class PaymentController {
         return ResponseEntity.ok("ok");
     }
 
-    @PostMapping
-    @GetMapping("/paymentsTest")
+    @PostMapping("/paymentsTest")
     public ResponseEntity<?> createPaymentTest(@RequestBody PaymentDTO payment){
 
         PaymentDTO createdPayment = service.createTest(payment);

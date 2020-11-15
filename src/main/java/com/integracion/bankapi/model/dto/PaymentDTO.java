@@ -14,6 +14,7 @@ public class PaymentDTO {
     private BigDecimal amount;
     private Boolean paid;
     private Integer providerId;
+    private String providerName;
 
     public PaymentDTO() {
     }
@@ -50,4 +51,8 @@ public class PaymentDTO {
     public Integer getProviderId() { return providerId; }
 
     public void setProviderId(Integer providerId) { this.providerId = providerId; }
+
+    public String getProviderName() { return providerName; }
+
+    public void setProviderName(String providerName) { this.providerName = providerName; }
 }
