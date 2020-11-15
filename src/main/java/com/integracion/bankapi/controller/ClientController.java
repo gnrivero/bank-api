@@ -28,7 +28,7 @@ public class ClientController {
 
         Client createdClient = service.create(client);
 
-        return new ResponseEntity<Client>(client, HttpStatus.CREATED);
+        return new ResponseEntity<Client>(createdClient, HttpStatus.CREATED);
     }
 
     @GetMapping("/search")
@@ -40,17 +40,6 @@ public class ClientController {
         ClientDTO client = service.getClientByDniOrCuil(dni, cuil);
 
         return ResponseEntity.ok(client);
-    }
-
-    @PostMapping("/edit")
-    public ResponseEntity<?> edit(@RequestBody ClientDTO clientEdit){
-
-        ClientDTO client = service.edit(clientEdit);
-        if (client == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
-            return ResponseEntity.ok(client);
-        }
     }
 
     @GetMapping("/{idClient}/accounts")
