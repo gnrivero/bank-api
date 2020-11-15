@@ -27,7 +27,13 @@ public class ClientService {
 
     public ClientDTO getClientByDniOrCuil(String dni, String cuil){
 
-        Optional<Client> client = repo.findByDniOrCuil(dni, cuil);
+        Optional<Client> client = Optional.empty();
+
+        if (cuil != null)
+            client = repo.findByCuil(cuil);
+
+        if (client.isEmpty() && dni != null)
+            client = repo.findByDni(dni);
 
         if (client.isEmpty()){
             throw new ClientNotFoundException(
