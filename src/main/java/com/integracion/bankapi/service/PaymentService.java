@@ -8,6 +8,7 @@ import com.integracion.bankapi.repository.ProviderRepository;
 import com.integracion.bankapi.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -139,7 +140,7 @@ public class PaymentService {
         List<Provider> providers = repoProvider.findAll();
         for (Provider provider: providers){
             /////0002-disponible
-            Path path = Paths.get(provider.getProviderCode()+"-disponible.txt");
+            Path path = Paths.get("proveedores"+ File.separator+ provider.getProviderCode()+"-disponible.txt");
 
             List<Payment> payments = new ArrayList<Payment>();
             List<String> list = new ArrayList<>();
@@ -155,8 +156,9 @@ public class PaymentService {
                 Payment p = new Payment();
 
                 String[] values = l.split(",");
-                p.setElectronicCode(String.format("%6s",values[0]).replace(' ','0'));
-                p.setAmount(BigDecimal.valueOf(Long.parseLong(values[1])));
+                ///p.setElectronicCode(String.format("%6s",values[0]).replace(' ','0'));
+                p.setElectronicCode(values[0]);
+                p.setAmount(BigDecimal.valueOf(Double.parseDouble(values[1])));
                 p.setDate(LocalDate.parse(values[2]));
                 p.setPaid(false);
                 p.setProvider(provider);
@@ -179,7 +181,7 @@ public class PaymentService {
                 repo.saveAll(payments);
                 try{
                     // rename a file in the same directory
-                    Files.move(path, Paths.get(provider.getProviderCode() + "-disponible" + LocalDate.now() + ".txt"));
+                    Files.move(path, Paths.get("proveedores"+ File.separator+ provider.getProviderCode() + "-disponible" + LocalDate.now() + ".txt"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
