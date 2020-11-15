@@ -191,6 +191,19 @@ public class PaymentService {
 
     }
 
+    public PaymentDTO createTest(PaymentDTO paymentDTO)
+    {
+        Payment p = new Payment();
+        p.setDate(LocalDate.now());
+        p.setPaid(false);
+        Optional<Provider> prov = repoProvider.findById(paymentDTO.getProviderId());
+        p.setProvider(prov.get());
+        p.setAmount(paymentDTO.getAmount());
+        p.setElectronicCode(paymentDTO.getElectronicCode());
+        repo.save(p);
+        return toDTO(p);
+    }
+
 
     private Payment toPayment(PaymentDTO paymentOrigin){
         Payment payment = new Payment();
@@ -209,6 +222,7 @@ public class PaymentService {
         payment.setDate(paymentOrigin.getDate());
         payment.setElectronicCode(paymentOrigin.getElectronicCode());
         payment.setPaid(paymentOrigin.getPaid());
+        payment.setProviderName(paymentOrigin.getProvider().getName());
         return payment;
     }
 
