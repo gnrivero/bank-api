@@ -1,12 +1,14 @@
 package com.integracion.bankapi.controller;
 
 import com.integracion.bankapi.model.dto.AccountDTO;
+import com.integracion.bankapi.model.dto.PatchAccountRequest;
 import com.integracion.bankapi.model.dto.TransactionAccountDTO;
 import com.integracion.bankapi.service.AccountService;
 import com.integracion.bankapi.service.TransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Optional;
 
@@ -47,16 +49,27 @@ public class AccountController {
         return ResponseEntity.ok(account);
     }
 
-    @GetMapping("/{idAccount}/transactions")
-    public ResponseEntity<?> getTransactionByIdAccount(@PathVariable Integer idAccount){
+    @GetMapping("/{id}/transactions")
+    public ResponseEntity<?> getTransactionByIdAccount(@PathVariable Integer id){
 
-        TransactionAccountDTO transactionsAccount = transactionService.getTransactionsByIdAccount(idAccount);
+        TransactionAccountDTO transactionsAccount = transactionService.getTransactionsByIdAccount(id);
         if (transactionsAccount == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }else{
             return new ResponseEntity(transactionsAccount,HttpStatus.OK);
 
         }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateAccountOverdraft(
+            @PathVariable Integer id,
+            @RequestBody PatchAccountRequest body
+    ){
+
+        service.patchAccount(body.getOverdraft(), id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

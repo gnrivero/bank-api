@@ -2,8 +2,8 @@ package com.integracion.bankapi.model;
 
 public enum AccountType
 {
-    CA("CA","Caja de ahorro",30),
-    CC("CC","Cuenta corriente",80);
+    CA("CA","Caja de Ahorro",30),
+    CC("CC","Cuenta Corriente",80);
 
     private String accountTypeName;
     private String shortName;
