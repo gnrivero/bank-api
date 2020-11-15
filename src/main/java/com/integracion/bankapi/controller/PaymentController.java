@@ -45,4 +45,17 @@ public class PaymentController {
         service.generatePayments();
         return ResponseEntity.ok("ok");
     }
+
+    @PostMapping("/paymentsTest")
+    public ResponseEntity<?> createPaymentTest(@RequestBody PaymentDTO payment){
+
+        PaymentDTO createdPayment = service.createTest(payment);
+
+        if (createdPayment == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else{
+            return new ResponseEntity<PaymentDTO>(createdPayment, HttpStatus.CREATED);
+        }
+    }
+
 }
