@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Integer> {
 
-     Optional<Client> findByDniOrCuil(String dni, String cuil);
+     Optional<Client> findByDni(String dni);
 
      Optional<Client> findByCuil(String cuil);
 
