@@ -53,6 +53,16 @@ public class ProviderController {
         }
     }
 
+    //PARA PRUEBAS
+    @DeleteMapping("/{idProvider}")
+    public ResponseEntity<?> deleteProvider(@PathVariable Integer idProvider){
+
+        service.delete(idProvider);
+        return  new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+
     @PostMapping("/uploadfile")
 //    public ResponseEntity<?> uploadFile(@RequestBody ProviderFileDTO providerFile){
         public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("providerCode") String providerFile) {
