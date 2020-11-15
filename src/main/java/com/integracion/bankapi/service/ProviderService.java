@@ -2,6 +2,8 @@ package com.integracion.bankapi.service;
 
 import com.integracion.bankapi.model.*;
 import com.integracion.bankapi.model.dto.ProviderDTO;
+import com.integracion.bankapi.model.exception.ClientNotFoundException;
+import com.integracion.bankapi.model.exception.ProviderNotFoundException;
 import com.integracion.bankapi.repository.AccountRepository;
 import com.integracion.bankapi.repository.ProviderRepository;
 import org.springframework.stereotype.Service;
@@ -76,10 +78,8 @@ public class ProviderService {
                 stream.write(bytes);
                 stream.close();
 
-                System.out.println("Server File Location=" + serverFile.getAbsolutePath());
-
             } catch (Exception e) {
-                return null;
+                new RuntimeException(e.getMessage());
             }
         }
     }
@@ -105,13 +105,13 @@ public class ProviderService {
     public ProviderDTO getProviderById(Integer id){
         Optional<Provider> pRepo = repo.findById(id);
         ProviderDTO p;
-        if(pRepo.isPresent()){
-            p = new ProviderDTO();
-            mapping(pRepo.get(),p);
-        }
-        else{
-            p = null;
-        }
+        if (pRepo.isEmpty())
+            throw new ProviderNotFoundException(
+                    String.format("No se encontro el Proveedor")
+            );
+        p = new ProviderDTO();
+        mapping(pRepo.get(),p);
+
         return p;
     }
 

@@ -44,14 +44,11 @@ public class ProviderController {
     }
 */
     @GetMapping("/{idProvider}")
-    public ResponseEntity<?> getClientById(@PathVariable Integer idProvider){
+    public ResponseEntity<?> getProviderById(@PathVariable Integer idProvider){
 
         ProviderDTO provider = service.getProviderById(idProvider);
-        if (provider == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
-            return ResponseEntity.ok(provider);
-        }
+        return ResponseEntity.ok(provider);
+
     }
 
     //PARA PRUEBAS
@@ -65,10 +62,8 @@ public class ProviderController {
 
 
     @PostMapping("/uploadfile")
-//    public ResponseEntity<?> uploadFile(@RequestBody ProviderFileDTO providerFile){
         public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("providerCode") String providerFile) {
 
-        //ProviderDTO createdProvider = service.create(provider);
         service.saveFile(file,providerFile);
         return  new ResponseEntity<>(HttpStatus.OK);
 
