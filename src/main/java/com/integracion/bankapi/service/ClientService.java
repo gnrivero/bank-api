@@ -21,8 +21,18 @@ public class ClientService {
     }
 
     public Client create(Client client) {
-        client.setActive(true);
-        return repo.save(client);
+        try {
+            ClientDTO clientDTO = getClientByDniOrCuil(client.getDni(), client.getCuil());
+        }catch (ClientNotFoundException e){
+            client.setActive(true);
+            return repo.save(client);
+        }
+        //Encontro un cliente con datos
+        throw new ClientNotFoundException(
+                String.format("Ya existe un cliente con DNI: %s, CUIL: %s", client.getDni(), client.getCuil())
+        );
+
+
     }
 
     public ClientDTO getClientByDniOrCuil(String dni, String cuil){
