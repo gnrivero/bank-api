@@ -41,3 +41,16 @@ logging:
 swagger:
   host:
     url: https://bank-api-integrations.herokuapp.com
+
+# CORS
+cors-config:
+  allowed-origins:
+    - https://bank-app-int.herokuapp.com
+    - http://localhost:8080
+    - http://localhost:3000
+  allowed-methods:
+    - GET
+    - POST
+    - PATCH
+  allowed-headers:
+    - Content-Type
