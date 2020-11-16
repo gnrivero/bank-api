@@ -16,11 +16,10 @@ import java.util.List;
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
     Payment findByElectronicCodeAndPaidAndDateAfter(String electronicCode, Boolean paid, LocalDate date);
-
-
+    
     @Modifying
     @Transactional
-    @Query(value = "delete from payments p where p.paid = false and p.provider_id = ?1", nativeQuery = true)
+    @Query(value = "delete from payments where paid = false and provider_id = ?1", nativeQuery = true)
     void removeExpired(Integer id);
 /*
     @Query(value = "select * from transactions t where t.account_id =  ?1 ORDER BY date DESC ",
