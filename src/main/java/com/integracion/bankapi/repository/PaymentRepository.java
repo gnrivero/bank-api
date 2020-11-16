@@ -19,8 +19,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     
     @Modifying
     @Transactional
-    @Query(value = "delete from payments where paid = ?2 and provider_id = ?1", nativeQuery = true)
-    void removeExpired(Integer id,Boolean paid);
+    @Query(value = "delete from payments where paid = false and provider_id = ?1", nativeQuery = true)
+    void removeExpired(Integer id);
 /*
     @Query(value = "select * from transactions t where t.account_id =  ?1 ORDER BY date DESC ",
             nativeQuery = true)
