@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/payments")
 public class PaymentController {
@@ -32,12 +34,18 @@ public class PaymentController {
     public ResponseEntity<?> getPaymentByElectronicCode(@PathVariable String electronicCode){
 
         PaymentDTO payment = service.getPaymentByElectronicCode(electronicCode);
-        if (payment == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }else{
-            return ResponseEntity.ok(payment);
-        }
+        return ResponseEntity.ok(payment);
+
     }
+
+    @GetMapping("/search/electronicCode/{electronicCode}/paid")
+    public ResponseEntity<List<?>> getPaymentPaidByElectronicCode(@PathVariable String electronicCode){
+
+        List<PaymentDTO> payments = service.getPaymentPaidByElectronicCode(electronicCode);
+
+        return new ResponseEntity(payments,HttpStatus.OK);
+    }
+
 
     @GetMapping("/generatePayments")
     public ResponseEntity generatePayments(){

@@ -11,11 +11,14 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
-    Payment findByElectronicCodeAndPaidAndDateAfter(String electronicCode, Boolean paid, LocalDate date);
+    Optional<Payment> findByElectronicCodeAndPaidAndDateAfter(String electronicCode, Boolean paid, LocalDate date);
+
+    List<Payment> findByElectronicCodeAndPaid(String electronicCode, Boolean paid);
     
     @Modifying
     @Transactional
