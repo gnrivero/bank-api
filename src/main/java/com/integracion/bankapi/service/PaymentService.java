@@ -1,7 +1,9 @@
 package com.integracion.bankapi.service;
 
 import com.integracion.bankapi.model.*;
+import com.integracion.bankapi.model.dto.AccountDTO;
 import com.integracion.bankapi.model.dto.PaymentDTO;
+import com.integracion.bankapi.model.exception.AccountNotFoundException;
 import com.integracion.bankapi.model.exception.PaymentExpireException;
 import com.integracion.bankapi.model.exception.PaymentNotFoundException;
 import com.integracion.bankapi.repository.AccountRepository;
@@ -58,7 +60,7 @@ public class PaymentService {
         Transaction transactionBank = new Transaction();
         transactionBank.setCash(true);
         transactionBank.setDate(new Date());
-        transactionBank.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
+        transactionBank.setDetail("Comision Cobro Servicio - "+ payment.getProvider().getName()+ " - "+ payment.getElectronicCode());
         transactionBank.setTransactionType("COB");
         transactionBank.setOperationType("I");
         transactionBank.setAccount(accountBank);
@@ -67,7 +69,7 @@ public class PaymentService {
         Transaction transactionProvider = new Transaction();
         transactionProvider.setCash(true);
         transactionProvider.setDate(new Date());
-        transactionProvider.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
+        transactionProvider.setDetail("Cobro Servicio - "+ payment.getProvider().getName() + " - "+ payment.getElectronicCode() );
         transactionProvider.setTransactionType("COB");
         transactionProvider.setOperationType("I");
         transactionProvider.setAccount(accountProvider);
@@ -99,7 +101,7 @@ public class PaymentService {
                 Transaction transactionClient = new Transaction();
                 transactionClient.setCash(true);
                 transactionClient.setDate(new Date());
-                transactionClient.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
+                transactionClient.setDetail("Cobro Servicio - "+ payment.getProvider().getName()+ " - "+ payment.getElectronicCode());
                 transactionClient.setTransactionType("COB");
                 transactionClient.setOperationType("E");
                 transactionClient.setAccount(accountClient);
@@ -127,14 +129,27 @@ public class PaymentService {
     public PaymentDTO getPaymentByElectronicCode(String electronicCode){
         LocalDate expiration = LocalDate.now().plusDays(-1);
 
-        Payment paymentRepo = repo.findByElectronicCodeAndPaidAndDateAfter(electronicCode,false,expiration);
-        PaymentDTO payment;
-        if(paymentRepo != null){
-            payment = toDTO(paymentRepo);
-        } else{
-            payment = null;
-        }
+        Optional<Payment> paymentRepo = repo.findByElectronicCodeAndPaidAndDateAfter(electronicCode,false,expiration);
+
+        if (paymentRepo.isEmpty())
+            throw new PaymentNotFoundException("No se encontro el comprobante de pago electronico");
+
+        PaymentDTO payment  = toDTO(paymentRepo.get());
         return payment;
+    }
+
+
+    public List<PaymentDTO> getPaymentPaidByElectronicCode(String electronicCode){
+
+        List<Payment> payments = repo.findByElectronicCodeAndPaid(electronicCode,true);
+
+        List<PaymentDTO> paymentDTOs = new ArrayList<PaymentDTO>();
+        for (Payment p: payments){
+            PaymentDTO pDTO = toDTO(p);
+            paymentDTOs.add(pDTO);
+
+        }
+        return paymentDTOs;
     }
 
     public void generatePayments(){
