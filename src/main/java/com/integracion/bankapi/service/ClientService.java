@@ -1,9 +1,12 @@
 package com.integracion.bankapi.service;
 
+import com.integracion.bankapi.model.Account;
 import com.integracion.bankapi.model.Client;
 import com.integracion.bankapi.model.dto.ClientDTO;
+import com.integracion.bankapi.model.exception.AccountNotFoundException;
 import com.integracion.bankapi.model.exception.ClientNotFoundException;
 import com.integracion.bankapi.model.mapper.ClientMapper;
+import com.integracion.bankapi.repository.AccountRepository;
 import com.integracion.bankapi.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +16,12 @@ import java.util.Optional;
 public class ClientService {
 
     private ClientRepository repo;
+    private AccountRepository accountRepo;
     private ClientMapper mapper;
 
-    public ClientService (ClientRepository repo, ClientMapper mapper){
+    public ClientService (ClientRepository repo, AccountRepository accountRepo, ClientMapper mapper){
         this.repo = repo;
+        this.accountRepo = accountRepo;
         this.mapper = mapper;
     }
 
@@ -52,6 +57,15 @@ public class ClientService {
         }
 
         return mapper.toDto(client.get());
+    }
+
+    public ClientDTO getClientByIdentificationNumber(String identificationNumber){
+        Optional<Account> account = accountRepo.findByIdentificationNumber(identificationNumber);
+        if (account.isEmpty())
+            throw new AccountNotFoundException();
+
+        return  mapper.toDto(account.get().getClient());
+
     }
 
 

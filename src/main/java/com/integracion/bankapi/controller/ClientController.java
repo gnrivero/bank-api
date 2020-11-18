@@ -57,6 +57,13 @@ public class ClientController {
         ClientDTO client = service.getClientById(idClient);
 
         return ResponseEntity.ok(client);
+    }
 
+    @GetMapping("/search/cbu/{identificationNumber}")
+    public ResponseEntity<?> searchClientByIdentificationNumber(@PathVariable String identificationNumber) {
+
+        ClientDTO client = service.getClientByIdentificationNumber(identificationNumber);
+
+        return ResponseEntity.ok(client);
     }
 }
