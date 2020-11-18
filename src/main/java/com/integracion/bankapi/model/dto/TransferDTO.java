@@ -4,23 +4,23 @@ import java.math.BigDecimal;
 
 public class TransferDTO {
 
-    private Integer sourceAccount;
-    private Integer destinationAccount;
+    private String sourceAccount;
+    private String destinationAccount;
     private BigDecimal amount;
 
-    public Integer getSourceAccount() {
+    public String getSourceAccount() {
         return sourceAccount;
     }
 
-    public void setSourceAccount(Integer sourceAccount) {
+    public void setSourceAccount(String sourceAccount) {
         this.sourceAccount = sourceAccount;
     }
 
-    public Integer getDestinationAccount() {
+    public String getDestinationAccount() {
         return destinationAccount;
     }
 
-    public void setDestinationAccount(Integer destinationAccount) {
+    public void setDestinationAccount(String destinationAccount) {
         this.destinationAccount = destinationAccount;
     }
 
