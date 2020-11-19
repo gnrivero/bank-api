@@ -7,6 +7,8 @@ public class TransferDTO {
     private String sourceAccount;
     private String destinationAccount;
     private BigDecimal amount;
+    private String detailSourceAccount;
+    private String detailDestinationAccount;
 
     public String getSourceAccount() {
         return sourceAccount;
@@ -31,4 +33,12 @@ public class TransferDTO {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
+
+    public String getDetailSourceAccount() { return detailSourceAccount; }
+
+    public void setDetailSourceAccount(String detailSourceAccount) { this.detailSourceAccount = detailSourceAccount; }
+
+    public String getDetailDestinationAccount() { return detailDestinationAccount; }
+
+    public void setDetailDestinationAccount(String detailDestinationAccount) { this.detailDestinationAccount = detailDestinationAccount; }
 }

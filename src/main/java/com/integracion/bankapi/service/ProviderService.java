@@ -115,6 +115,19 @@ public class ProviderService {
         return p;
     }
 
+    public ProviderDTO getProviderByProviderCode(String providerCode){
+        Optional<Provider> pRepo = repo.findByProviderCode(providerCode);
+        ProviderDTO p;
+        if (pRepo.isEmpty())
+            throw new ProviderNotFoundException(
+                    String.format("No se encontro el Proveedor")
+            );
+        p = new ProviderDTO();
+        mapping(pRepo.get(),p);
+
+        return p;
+    }
+
     private void mapping (ProviderDTO pOrigin, Provider provider){
         provider.setId(pOrigin.getId());
         provider.setName(pOrigin.getName());
@@ -125,6 +138,7 @@ public class ProviderService {
         provider.setId(pOrigin.getId());
         provider.setName(pOrigin.getName());
         provider.setProviderCode(pOrigin.getProviderCode());
+        provider.setAccountId(pOrigin.getAccount().getId());
     }
 
 }

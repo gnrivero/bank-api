@@ -23,4 +23,6 @@ public class ProviderDTO {
     public void setProviderCode(String providerCode) { this.providerCode = providerCode; }
 
     public Integer getAccountId() { return accountId; }
+
+    public void setAccountId(Integer accountId) { this.accountId = accountId; }
 }

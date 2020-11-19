@@ -15,6 +15,7 @@ public class TransactionMapper {
         transaction.setTransactionType(transactionDTO.getTransactionType());
         transaction.setCash(transactionDTO.getCash());
         transaction.setOperationType(transactionDTO.getOperationType());
+        transaction.setDate(transactionDTO.getDate());
         return transaction;
     }
 
@@ -25,7 +26,7 @@ public class TransactionMapper {
         transactionDTO.setDetail(transaction.getDetail());
         transactionDTO.setTransactionType(transaction.getTransactionType());
         transactionDTO.setOperationType(transaction.getOperationType());
-        transaction.setDate(transaction.getDate());
+        transactionDTO.setDate(transaction.getDate());
         return transactionDTO;
     }
 
