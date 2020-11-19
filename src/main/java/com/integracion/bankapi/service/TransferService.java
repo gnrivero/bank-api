@@ -1,9 +1,6 @@
 package com.integracion.bankapi.service;
 
-import com.integracion.bankapi.model.Account;
-import com.integracion.bankapi.model.dto.AccountDTO;
-import com.integracion.bankapi.model.dto.TransactionDTO;
-import com.integracion.bankapi.model.dto.TransferDTO;
+import com.integracion.bankapi.model.dto.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,10 +8,12 @@ public class TransferService {
 
     private TransactionService txService;
     private AccountService accountService;
+    private ProviderService providerService;
 
-    public TransferService(TransactionService txService, AccountService accountService) {
+    public TransferService(TransactionService txService, AccountService accountService, ProviderService providerService) {
         this.txService = txService;
         this.accountService = accountService;
+        this.providerService = providerService;
     }
 
     public TransferDTO createTransfer(TransferDTO transferDTO) {
@@ -23,15 +22,15 @@ public class TransferService {
         withdraw.setCash(false);
         withdraw.setTransactionType("TRANSFER");
         withdraw.setAmount(transferDTO.getAmount());
-        /*
-         Si no generalizamos en el origen no tendriamos que validar que sea de nuestro banco
-        */
+
         if(transferDTO.getSourceAccount().startsWith("456")){
-        //Cuenta interna
+        //Cuenta origen interna
             AccountDTO account = accountService.getAccountByIdentificationNumber(transferDTO.getSourceAccount());
             withdraw.setAccountId(account.getId());
-            withdraw.setDetail(String.format("Transferenca a cuenta CBU %s", account.getIdentificationNumber()));
-
+            if (transferDTO.getDetailSourceAccount() == null)
+                withdraw.setDetail(String.format("Transferenca a cuenta CBU %s", transferDTO.getDestinationAccount()));
+            else
+                withdraw.setDetail(transferDTO.getDetailSourceAccount());
         }else{
         /*
          TODO: validar con el otro banco. Creo que no haria falta
@@ -39,17 +38,18 @@ public class TransferService {
         }
 
         TransactionDTO deposit = null;
-        if(transferDTO.getSourceAccount().startsWith("456")){
-            //Cuenta interna
+        if(transferDTO.getDestinationAccount().startsWith("456")){
+            //Cuenta destion interna
             deposit = new TransactionDTO();
             AccountDTO account = accountService.getAccountByIdentificationNumber(transferDTO.getDestinationAccount());
             deposit.setCash(false);
             deposit.setTransactionType("TRANSFER");
             deposit.setAmount(transferDTO.getAmount());
             deposit.setAccountId(account.getId());
-            deposit.setDetail(String.format("Transferenca desde cuenta CBU %s", account.getIdentificationNumber()));
-
-
+            if(transferDTO.getDetailDestinationAccount() == null)
+                deposit.setDetail(String.format("Transferenca desde cuenta CBU %s", transferDTO.getSourceAccount()));
+            else
+                deposit.setDetail(transferDTO.getDetailDestinationAccount());
         }else{
           /*
          TODO: validar con el otro banco. Si falla devolver una exception
@@ -60,6 +60,34 @@ public class TransferService {
             txService.createDeposit(deposit);
 
         return transferDTO;
+    }
+
+
+    public TransferDTO createSalaryTransfer(ExternalPaymentDTO salaryPaymentDTO) {
+        ProviderDTO provider = providerService.getProviderByProviderCode(salaryPaymentDTO.getProviderCode());
+        AccountDTO accountProvider = accountService.getAccountById(provider.getAccountId());
+        TransferDTO t = new TransferDTO();
+        t.setSourceAccount(accountProvider.getIdentificationNumber());
+        t.setDestinationAccount(salaryPaymentDTO.getAccount());
+        t.setAmount(salaryPaymentDTO.getAmount());
+        t.setDetailSourceAccount(String.format("Pago sueldo a CBU %s", salaryPaymentDTO.getAccount()));
+        t.setDetailDestinationAccount(String.format("Acreditacion sueldo a cuenta de %s", provider.getName()));
+
+        return this.createTransfer(t);
+
+    }
+
+    public TransferDTO createPaymentTransfer(ExternalPaymentDTO salaryPaymentDTO) {
+        ProviderDTO provider = providerService.getProviderByProviderCode(salaryPaymentDTO.getProviderCode());
+        AccountDTO accountProvider = accountService.getAccountById(provider.getAccountId());
+        TransferDTO t = new TransferDTO();
+        t.setDestinationAccount(accountProvider.getIdentificationNumber());
+        t.setSourceAccount(salaryPaymentDTO.getAccount());
+        t.setAmount(salaryPaymentDTO.getAmount());
+        t.setDetailSourceAccount(String.format("Compra realizada en %s", provider.getName()));
+        t.setDetailDestinationAccount(String.format("Acreditacion pago desde CBU %s", salaryPaymentDTO.getAccount()));
+
+        return this.createTransfer(t);
     }
 
 }
