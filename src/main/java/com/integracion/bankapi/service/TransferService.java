@@ -68,9 +68,9 @@ public class TransferService {
         AccountDTO accountProvider = accountService.getAccountById(provider.getAccountId());
         TransferDTO t = new TransferDTO();
         t.setSourceAccount(accountProvider.getIdentificationNumber());
-        t.setDestinationAccount(salaryPaymentDTO.getAccount());
+        t.setDestinationAccount(salaryPaymentDTO.getCbu());
         t.setAmount(salaryPaymentDTO.getAmount());
-        t.setDetailSourceAccount(String.format("Pago sueldo a CBU %s", salaryPaymentDTO.getAccount()));
+        t.setDetailSourceAccount(String.format("Pago sueldo a CBU %s", salaryPaymentDTO.getCbu()));
         t.setDetailDestinationAccount(String.format("Acreditacion sueldo a cuenta de %s", provider.getName()));
 
         return this.createTransfer(t);
@@ -82,10 +82,10 @@ public class TransferService {
         AccountDTO accountProvider = accountService.getAccountById(provider.getAccountId());
         TransferDTO t = new TransferDTO();
         t.setDestinationAccount(accountProvider.getIdentificationNumber());
-        t.setSourceAccount(salaryPaymentDTO.getAccount());
+        t.setSourceAccount(salaryPaymentDTO.getCbu());
         t.setAmount(salaryPaymentDTO.getAmount());
         t.setDetailSourceAccount(String.format("Compra realizada en %s", provider.getName()));
-        t.setDetailDestinationAccount(String.format("Acreditacion pago desde CBU %s", salaryPaymentDTO.getAccount()));
+        t.setDetailDestinationAccount(String.format("Acreditacion pago desde CBU %s", salaryPaymentDTO.getCbu()));
 
         return this.createTransfer(t);
     }

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class ExternalPaymentDTO {
 
-    private String account;
+    private String cbu;
     private String providerCode;
     private BigDecimal amount;
 
@@ -20,7 +20,7 @@ public class ExternalPaymentDTO {
 
     public void setProviderCode(String providerCode) { this.providerCode = providerCode; }
 
-    public String getAccount() { return account; }
+    public String getCbu() { return cbu; }
 
-    public void setAccount(String account) { this.account = account; }
+    public void setCbu(String cbu) { this.cbu = cbu; }
 }

@@ -25,7 +25,7 @@ public class ExternalController {
 
         TransferDTO createdExternalPayment = service.createSalaryTransfer(salaryPaymentDTO);
 
-        return new ResponseEntity<String>(String.format("\"Pago de salario realizado a CBU: %s\"", salaryPaymentDTO.getAccount()), HttpStatus.CREATED);
+        return new ResponseEntity<String>(String.format("\"Pago de salario realizado a CBU: %s\"", salaryPaymentDTO.getCbu()), HttpStatus.CREATED);
     }
 
     @PostMapping("/payment")
@@ -33,7 +33,7 @@ public class ExternalController {
 
         TransferDTO createdExternalPayment = service.createPaymentTransfer(paymentDTO);
 
-        return new ResponseEntity<String>(String.format("\"Pago realizado desde CBU: %s\"", paymentDTO.getAccount()), HttpStatus.CREATED);
+        return new ResponseEntity<String>(String.format("\"Pago realizado desde CBU: %s\"", paymentDTO.getCbu()), HttpStatus.CREATED);
     }
 
 }
