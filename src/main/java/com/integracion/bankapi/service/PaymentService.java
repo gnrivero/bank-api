@@ -1,7 +1,10 @@
 package com.integracion.bankapi.service;
 
 import com.integracion.bankapi.model.*;
+import com.integracion.bankapi.model.dto.AccountDTO;
 import com.integracion.bankapi.model.dto.PaymentDTO;
+import com.integracion.bankapi.model.exception.AccountLimitSurpassedException;
+import com.integracion.bankapi.model.exception.AccountNotFoundException;
 import com.integracion.bankapi.model.exception.PaymentExpireException;
 import com.integracion.bankapi.model.exception.PaymentNotFoundException;
 import com.integracion.bankapi.repository.AccountRepository;
@@ -41,12 +44,12 @@ public class PaymentService {
     {
         Optional<Payment> paymentRepo = repo.findById(paymentDTO.getId());
         if(paymentRepo.isEmpty()){
-            new PaymentNotFoundException("No se encontro el comprobante de pago electronico");
+            throw new PaymentNotFoundException("No se encontro el comprobante de pago electronico");
         }
         Payment payment = paymentRepo.get();
         //si no esta pago y no esta vencida Continua
         if(payment.getPaid() || payment.getDate().isBefore(LocalDate.now().plusDays(-1))){
-            new PaymentExpireException();
+            throw new PaymentExpireException();
         }
         Account accountProvider = payment.getProvider().getAccount();
         //TODO ver de donde sacamos el id de la cuenta del banco (en el server el cliente id 1 tiene la cuenta id:10)
@@ -56,20 +59,20 @@ public class PaymentService {
         BigDecimal amountBank = payment.getAmount().multiply(TransactionType.SERVICE_PAYMENT.getPercent());
         BigDecimal amountProvider = payment.getAmount().subtract(amountBank);
         Transaction transactionBank = new Transaction();
-        transactionBank.setCash(true);
+        transactionBank.setCash(paymentDTO.getCash());
         transactionBank.setDate(new Date());
-        transactionBank.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
-        transactionBank.setTransactionType("COB");
-        transactionBank.setOperationType("I");
+        transactionBank.setDetail("Comision Cobro Servicio - "+ payment.getProvider().getName()+ " - "+ payment.getElectronicCode());
+        transactionBank.setTransactionType(TransactionType.SERVICE_PAYMENT.getShortName());
+        transactionBank.setOperationType("INCOME");
         transactionBank.setAccount(accountBank);
         transactionBank.setAmount(amountBank);
 
         Transaction transactionProvider = new Transaction();
-        transactionProvider.setCash(true);
+        transactionProvider.setCash(paymentDTO.getCash());
         transactionProvider.setDate(new Date());
-        transactionProvider.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
-        transactionProvider.setTransactionType("COB");
-        transactionProvider.setOperationType("I");
+        transactionProvider.setDetail("Cobro Servicio - "+ payment.getProvider().getName() + " - "+ payment.getElectronicCode() );
+        transactionProvider.setTransactionType(TransactionType.SERVICE_PAYMENT.getShortName());
+        transactionProvider.setOperationType("INCOME");
         transactionProvider.setAccount(accountProvider);
         transactionProvider.setAmount(amountProvider);
 
@@ -85,32 +88,32 @@ public class PaymentService {
             //Cuenta desde donde se pagan los servicios
             Optional<Account> accountRepo = repoAccount.findById(paymentDTO.getAccountId());
 
-            if (accountRepo.isPresent()) {
-                Account accountClient = accountRepo.get();
-
-                BigDecimal newBalance = accountClient.getBalance().subtract(payment.getAmount());
-                //Si se paga desde una CA esta no puede quedar con saldo negativo
-                if(accountClient.getAccountType().equals("CA")
-                        && newBalance.compareTo(BigDecimal.ZERO) == -1){
-                    return null;
-                }
-                accountClient.setBalance(newBalance);
-
-                Transaction transactionClient = new Transaction();
-                transactionClient.setCash(true);
-                transactionClient.setDate(new Date());
-                transactionClient.setDetail("Cobro Servicio - "+ payment.getProvider().getName());
-                transactionClient.setTransactionType("COB");
-                transactionClient.setOperationType("E");
-                transactionClient.setAccount(accountClient);
-                transactionClient.setAmount(payment.getAmount());
-
-                repoTransaction.save(transactionClient);
-                repoAccount.save(accountClient);
-
-            }else{
-                return null;
+            if(accountRepo.isEmpty()){
+                throw new AccountNotFoundException();
             }
+            Account accountClient = accountRepo.get();
+
+            BigDecimal newBalance = accountClient.getBalance().subtract(payment.getAmount());
+            //Si se paga desde una CA esta no puede quedar con saldo negativo
+            if(accountClient.getAccountType().equals("CA")
+                    && newBalance.compareTo(BigDecimal.ZERO) == -1){
+                throw new AccountLimitSurpassedException();
+            }
+            accountClient.setBalance(newBalance);
+
+            Transaction transactionClient = new Transaction();
+            transactionClient.setCash(false);
+            transactionClient.setDate(new Date());
+            transactionClient.setDetail("Cobro Servicio - "+ payment.getProvider().getName()+ " - "+ payment.getElectronicCode());
+            transactionClient.setTransactionType(TransactionType.SERVICE_PAYMENT.getShortName());
+            transactionClient.setOperationType("EXPENDITURE");
+            transactionClient.setAccount(accountClient);
+            transactionClient.setAmount(payment.getAmount());
+
+            repoTransaction.save(transactionClient);
+            repoAccount.save(accountClient);
+
+
         }
         repoTransaction.save(transactionBank);
         repoTransaction.save(transactionProvider);
@@ -127,14 +130,27 @@ public class PaymentService {
     public PaymentDTO getPaymentByElectronicCode(String electronicCode){
         LocalDate expiration = LocalDate.now().plusDays(-1);
 
-        Payment paymentRepo = repo.findByElectronicCodeAndPaidAndDateAfter(electronicCode,false,expiration);
-        PaymentDTO payment;
-        if(paymentRepo != null){
-            payment = toDTO(paymentRepo);
-        } else{
-            payment = null;
-        }
+        Optional<Payment> paymentRepo = repo.findByElectronicCodeAndPaidAndDateAfter(electronicCode,false,expiration);
+
+        if (paymentRepo.isEmpty())
+            throw new PaymentNotFoundException("No se encontro el comprobante de pago electronico");
+
+        PaymentDTO payment  = toDTO(paymentRepo.get());
         return payment;
+    }
+
+
+    public List<PaymentDTO> getPaymentPaidByElectronicCode(String electronicCode){
+
+        List<Payment> payments = repo.findByElectronicCodeAndPaid(electronicCode,true);
+
+        List<PaymentDTO> paymentDTOs = new ArrayList<PaymentDTO>();
+        for (Payment p: payments){
+            PaymentDTO pDTO = toDTO(p);
+            paymentDTOs.add(pDTO);
+
+        }
+        return paymentDTOs;
     }
 
     public void generatePayments(){
