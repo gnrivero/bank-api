@@ -54,3 +54,4 @@ cors-config:
     - PATCH
   allowed-headers:
     - Content-Type
+    - Authorization
