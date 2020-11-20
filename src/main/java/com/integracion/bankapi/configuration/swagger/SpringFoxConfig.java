@@ -1,4 +1,4 @@
-package com.integracion.bankapi.configuration;
+package com.integracion.bankapi.configuration.swagger;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

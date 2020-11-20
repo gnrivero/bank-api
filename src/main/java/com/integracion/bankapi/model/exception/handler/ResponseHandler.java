@@ -19,7 +19,7 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ProblemDetail(e.getMessage()),null, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({ ClientNotFoundException.class,ProviderNotFoundException.class, PaymentNotFoundException.class })
+    @ExceptionHandler({ ClientNotFoundException.class, ProviderNotFoundException.class, PaymentNotFoundException.class })
     public ResponseEntity<Object> handleClientNotFoundException(final Exception e) {
         return new ResponseEntity<>(new ProblemDetail(e.getMessage()),null, HttpStatus.NOT_FOUND);
     }

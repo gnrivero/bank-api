@@ -1,4 +1,4 @@
-package com.integracion.bankapi.configuration;
+package com.integracion.bankapi.configuration.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

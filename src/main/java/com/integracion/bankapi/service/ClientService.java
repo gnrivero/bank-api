@@ -1,6 +1,7 @@
 package com.integracion.bankapi.service;
 
 import com.integracion.bankapi.model.Client;
+import com.integracion.bankapi.model.User;
 import com.integracion.bankapi.model.dto.ClientDTO;
 import com.integracion.bankapi.model.exception.ClientNotFoundException;
 import com.integracion.bankapi.model.mapper.ClientMapper;
@@ -14,25 +15,30 @@ public class ClientService {
 
     private ClientRepository repo;
     private ClientMapper mapper;
+    private UserService userService;
 
-    public ClientService (ClientRepository repo, ClientMapper mapper){
+    public ClientService (ClientRepository repo, ClientMapper mapper, UserService userService){
         this.repo = repo;
         this.mapper = mapper;
+        this.userService = userService;
     }
 
     public Client create(Client client) {
         try {
             ClientDTO clientDTO = getClientByDniOrCuil(client.getDni(), client.getCuil());
-        }catch (ClientNotFoundException e){
+        } catch (ClientNotFoundException e) {
+
+            User user = new User();
+            user.setUsername(client.getEmail());
+            userService.createNewUser(user);
+
             client.setActive(true);
             return repo.save(client);
         }
-        //Encontro un cliente con datos
+
         throw new ClientNotFoundException(
                 String.format("Ya existe un cliente con DNI: %s, CUIL: %s", client.getDni(), client.getCuil())
         );
-
-
     }
 
     public ClientDTO getClientByDniOrCuil(String dni, String cuil){

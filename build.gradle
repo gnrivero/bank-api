@@ -13,12 +13,17 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// Spring Web/Rest
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// Swagger
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	// Data Access
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'mysql:mysql-connector-java'
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
