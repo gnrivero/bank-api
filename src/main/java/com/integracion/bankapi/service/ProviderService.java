@@ -106,9 +106,7 @@ public class ProviderService {
         Optional<Provider> pRepo = repo.findById(id);
         ProviderDTO p;
         if (pRepo.isEmpty())
-            throw new ProviderNotFoundException(
-                    String.format("No se encontro el Proveedor")
-            );
+            throw new ProviderNotFoundException();
         p = new ProviderDTO();
         mapping(pRepo.get(),p);
 
@@ -119,9 +117,7 @@ public class ProviderService {
         Optional<Provider> pRepo = repo.findByProviderCode(providerCode);
         ProviderDTO p;
         if (pRepo.isEmpty())
-            throw new ProviderNotFoundException(
-                    String.format("No se encontro el Proveedor")
-            );
+            throw new ProviderNotFoundException(    );
         p = new ProviderDTO();
         mapping(pRepo.get(),p);
 
