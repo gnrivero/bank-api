@@ -3,13 +3,18 @@ package com.integracion.bankapi.bankb.webclient;
 import com.integracion.bankapi.bankb.configuration.BankProperties;
 import com.integracion.bankapi.bankb.login.http.LoginRequest;
 import com.integracion.bankapi.bankb.login.http.LoginResponse;
+import com.integracion.bankapi.bankb.transfer.TransferRequest;
+import com.integracion.bankapi.bankb.transfer.TransferResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Component
@@ -31,19 +36,23 @@ public class BankWebClient {
                         .block();
     }
 
-    public String getToken() {
+    private String getToken() {
         if (validTokens.isEmpty()) {
-            return authenticateUser().getUser().getToken();
-        } else {
-            return validTokens.stream().findFirst().get();
+            Optional.ofNullable(authenticateUser().getUser().getToken())
+                    .ifPresent(validTokens::add);
         }
+
+        return validTokens.stream().findFirst().get();
     }
 
-    //TODO: Response del banco
-    public String makeTransfer() {
-
-        return getToken();
-
+    public TransferResponse makeTransfer(TransferRequest request) {
+        return webClient.post()
+                .uri(props.getTransfer().getUri())
+                .header("Authorization", "Bearer " + getToken())
+                .body(BodyInserters.fromValue(request))
+                .retrieve()
+                .bodyToMono(TransferResponse.class)
+                .block();
     }
 
 }
