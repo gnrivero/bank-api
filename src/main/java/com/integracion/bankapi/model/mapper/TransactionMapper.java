@@ -1,5 +1,6 @@
 package com.integracion.bankapi.model.mapper;
 
+import com.integracion.bankapi.bankb.transfer.TransferRequest;
 import com.integracion.bankapi.model.Transaction;
 import com.integracion.bankapi.model.dto.TransactionDTO;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,15 @@ public class TransactionMapper {
         transactionDTO.setOperationType(transaction.getOperationType());
         transactionDTO.setDate(transaction.getDate());
         return transactionDTO;
+    }
+
+    public TransferRequest toExternalTransferRequest(TransactionDTO transactionDTO) {
+        return TransferRequest.builder()
+                        .cbu(transactionDTO.getCbu())
+                        .cantidad(transactionDTO.getAmount())
+                        .concepto(transactionDTO.getDetail())
+                        .descripcion(transactionDTO.getDetail())
+                        .build();
     }
 
 }
