@@ -50,7 +50,7 @@ public class TransactionService {
         account.setBalance(newBalance);
 
         accountRepo.save(account);
-        repo.save(transaction);
+        transaction=repo.save(transaction);
 
         return mapper.toDTO(transaction);
     }
@@ -70,7 +70,7 @@ public class TransactionService {
         account.setBalance(newBalance);
 
         accountRepo.save(account);
-        repo.save(transaction);
+        transaction=repo.save(transaction);
 
         return mapper.toDTO(transaction);
     }
