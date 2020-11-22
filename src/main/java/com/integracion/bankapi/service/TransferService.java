@@ -24,13 +24,13 @@ public class TransferService {
 
     public TransferDTO createTransfer(TransferDTO transferDTO) {
 
-        TransactionDTO withdraw = new TransactionDTO();
-        withdraw.setCash(false);
-        withdraw.setTransactionType("TRANSFER");
-        withdraw.setAmount(transferDTO.getAmount());
-
+        TransactionDTO withdraw = null;
         if(transferDTO.getSourceAccount().startsWith("456")){
-        //Cuenta origen interna
+            withdraw = new TransactionDTO();
+            withdraw.setCash(false);
+            withdraw.setTransactionType("TRANSFER");
+            withdraw.setAmount(transferDTO.getAmount());
+            //Cuenta origen interna
             AccountDTO account = accountService.getAccountByIdentificationNumber(transferDTO.getSourceAccount());
             withdraw.setAccountId(account.getId());
             if (transferDTO.getDetailSourceAccount() == null)
@@ -61,10 +61,14 @@ public class TransferService {
          TODO: validar con el otro banco. Si falla devolver una exception
         */
         }
-        txService.createWithdraw(withdraw);
-        if(deposit != null)
-            txService.createDeposit(deposit);
-
+        if (withdraw != null){
+            withdraw = txService.createWithdraw(withdraw);
+            transferDTO.setSourceReferenceNumber(withdraw.getId());
+        }
+        if(deposit != null) {
+            deposit = txService.createDeposit(deposit);
+            transferDTO.setDestinationReferenceNumber((deposit.getId()));
+        }
         return transferDTO;
     }
 
@@ -76,8 +80,9 @@ public class TransferService {
         t.setSourceAccount(accountProvider.getIdentificationNumber());
         t.setDestinationAccount(salaryPaymentDTO.getCbu());
         t.setAmount(salaryPaymentDTO.getAmount());
-        t.setDetailSourceAccount(String.format("Pago sueldo a CBU %s", salaryPaymentDTO.getCbu()));
-        t.setDetailDestinationAccount(String.format("Acreditacion sueldo a cuenta de %s", provider.getName()));
+        if(salaryPaymentDTO.getDetail().isEmpty())
+        t.setDetailSourceAccount(String.format("Pago a CBU %s", salaryPaymentDTO.getCbu()));
+        t.setDetailDestinationAccount(salaryPaymentDTO.getDetail());
 
         return this.createTransfer(t);
 
@@ -90,7 +95,7 @@ public class TransferService {
         t.setDestinationAccount(accountProvider.getIdentificationNumber());
         t.setSourceAccount(salaryPaymentDTO.getCbu());
         t.setAmount(salaryPaymentDTO.getAmount());
-        t.setDetailSourceAccount(String.format("Compra realizada en %s", provider.getName()));
+        t.setDetailSourceAccount(salaryPaymentDTO.getDetail());
         t.setDetailDestinationAccount(String.format("Acreditacion pago desde CBU %s", salaryPaymentDTO.getCbu()));
 
         return this.createTransfer(t);

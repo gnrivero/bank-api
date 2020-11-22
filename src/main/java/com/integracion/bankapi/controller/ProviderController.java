@@ -60,7 +60,7 @@ public class ProviderController {
 
     }
 
-
+/*
     @PostMapping("/uploadfile")
         public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("providerCode") String providerFile) {
 
@@ -68,4 +68,5 @@ public class ProviderController {
         return  new ResponseEntity<>(HttpStatus.OK);
 
     }
+ */
 }

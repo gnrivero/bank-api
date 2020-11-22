@@ -47,10 +47,10 @@ public class PaymentController {
     }
 
 
-    @GetMapping("/generatePayments")
-    public ResponseEntity generatePayments(){
+    @PostMapping("/generatePayments/{providerCode}")
+    public ResponseEntity generatePayments(@PathVariable String providerCode,@RequestBody List<PaymentDTO> listPayment){
 
-        service.generatePayments();
+        service.generatePayments(providerCode,listPayment);
         return ResponseEntity.ok("ok");
     }
 
