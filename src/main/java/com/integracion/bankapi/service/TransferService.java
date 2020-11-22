@@ -1,19 +1,25 @@
 package com.integracion.bankapi.service;
 
-import com.integracion.bankapi.model.dto.*;
+import com.integracion.bankapi.bankb.webclient.BankWebClient;
+import com.integracion.bankapi.model.dto.AccountDTO;
+import com.integracion.bankapi.model.dto.ExternalPaymentDTO;
+import com.integracion.bankapi.model.dto.ProviderDTO;
+import com.integracion.bankapi.model.dto.TransactionDTO;
+import com.integracion.bankapi.model.dto.TransferDTO;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class TransferService {
 
     private TransactionService txService;
     private AccountService accountService;
     private ProviderService providerService;
+    private BankWebClient webClient;
 
-    public TransferService(TransactionService txService, AccountService accountService, ProviderService providerService) {
-        this.txService = txService;
-        this.accountService = accountService;
-        this.providerService = providerService;
+    public String dummyConnection(){
+        return webClient.getToken();
     }
 
     public TransferDTO createTransfer(TransferDTO transferDTO) {

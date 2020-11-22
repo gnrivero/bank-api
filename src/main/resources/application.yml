@@ -34,8 +34,8 @@ spring.http.log-request-details: false
 logging:
  level:
   root: INFO
-  org.springframework.web: INFO
-  org.springframework.web.HttpLogging: INFO
+  org.springframework.web: DEBUG
+  org.springframework.web.HttpLogging: DEBUG
   org.springframework.security: DEBUG
 # Swagger
 swagger:
@@ -48,9 +48,21 @@ cors-config:
     - https://bank-app-int.herokuapp.com
     - http://localhost:8080
     - http://localhost:3000
+    - https://integracion-banco.herokuapp.com
   allowed-methods:
     - GET
     - POST
     - PATCH
   allowed-headers:
     - Content-Type
+
+# Bank B Integration
+web-client-config:
+  host: https://integracion-banco.herokuapp.com
+  auth:
+    username: banco_a.bankame
+    password: kH3yt7zQxMCMDDwEQaZR8q6g6e525q
+    uri: /login
+  transfer:
+    uri: /b2b/transacciones/transferir
+

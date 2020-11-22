@@ -1,5 +1,6 @@
 package com.integracion.bankapi.controller;
 
+import com.integracion.bankapi.bankb.login.http.LoginResponse;
 import com.integracion.bankapi.model.dto.TransferDTO;
 import com.integracion.bankapi.service.TransferService;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,14 @@ public class TransferController {
         TransferDTO createdTransaction = service.createTransfer(transfer);
 
         return new ResponseEntity<TransferDTO>(createdTransaction, HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/login")
+    public ResponseEntity<?> createTransfer(){
+
+        String createdTransaction = service.dummyConnection();
+
+        return new ResponseEntity<String>(createdTransaction, HttpStatus.CREATED);
     }
 
 }
