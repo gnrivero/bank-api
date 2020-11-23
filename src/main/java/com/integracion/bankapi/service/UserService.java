@@ -3,6 +3,7 @@ package com.integracion.bankapi.service;
 import com.integracion.bankapi.model.security.Authority;
 import com.integracion.bankapi.model.security.User;
 import com.integracion.bankapi.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +19,7 @@ public class UserService {
         User user = new User();
         user.setUsername(username);
         user.setEnabled(true);
-        user.setPassword("1234");
+        user.setPassword(new BCryptPasswordEncoder().encode("1234"));
 
         Authority authority = new Authority();
         authority.setAuthority("ROLE_USER");
