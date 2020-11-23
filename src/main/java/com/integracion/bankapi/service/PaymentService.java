@@ -3,10 +3,7 @@ package com.integracion.bankapi.service;
 import com.integracion.bankapi.model.*;
 import com.integracion.bankapi.model.dto.AccountDTO;
 import com.integracion.bankapi.model.dto.PaymentDTO;
-import com.integracion.bankapi.model.exception.AccountLimitSurpassedException;
-import com.integracion.bankapi.model.exception.AccountNotFoundException;
-import com.integracion.bankapi.model.exception.PaymentExpireException;
-import com.integracion.bankapi.model.exception.PaymentNotFoundException;
+import com.integracion.bankapi.model.exception.*;
 import com.integracion.bankapi.repository.AccountRepository;
 import com.integracion.bankapi.repository.PaymentRepository;
 import com.integracion.bankapi.repository.ProviderRepository;
@@ -153,47 +150,27 @@ public class PaymentService {
         return paymentDTOs;
     }
 
-    public void generatePayments(){
-        List<Provider> providers = repoProvider.findAll();
-        for (Provider provider: providers){
-            /////0002-disponible
-            Path path = Paths.get("proveedores"+ File.separator+ provider.getProviderCode()+"-disponible.txt");
+    public void generatePayments(String providerCode, List<PaymentDTO> listPayment ) {
+        Optional<Provider> provider = repoProvider.findByProviderCode(providerCode);
+        if (provider.isEmpty())
+            throw new ProviderNotFoundException();
 
-            List<Payment> payments = new ArrayList<Payment>();
-            List<String> list = new ArrayList<>();
+        List<Payment> payments = new ArrayList<Payment>();
 
-            try (Stream<String> stream = Files.lines(path)) {
+        for (PaymentDTO l : listPayment) {
+            Payment p = new Payment();
 
-                list = stream.collect(Collectors.toList());
+            p.setElectronicCode(l.getElectronicCode());
+            p.setAmount(l.getAmount());
+            p.setDate(l.getDate());
+            p.setPaid(false);
+            p.setProvider(provider.get());
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                new RuntimeException(e.getMessage());
-            }
-            for (String l:list) {
-                Payment p = new Payment();
-
-                String[] values = l.split(",");
-                ///p.setElectronicCode(String.format("%6s",values[0]).replace(' ','0'));
-                p.setElectronicCode(values[0]);
-                p.setAmount(BigDecimal.valueOf(Double.parseDouble(values[1])));
-                p.setDate(LocalDate.parse(values[2]));
-                p.setPaid(false);
-                p.setProvider(provider);
-
-                payments.add(p);
-            }
-            if(list.toArray().length !=0) {
-                repo.removeExpired(provider.getId());
-                repo.saveAll(payments);
-                try{
-                    // rename a file in the same directory
-                    Files.move(path, Paths.get("proveedores"+ File.separator+ provider.getProviderCode() + "-disponible" + LocalDate.now() + ".txt"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    new RuntimeException(e.getMessage());
-                }
-            }
+            payments.add(p);
+        }
+        if (!listPayment.isEmpty()){
+            repo.removeExpired(provider.get().getId());
+            repo.saveAll(payments);
         }
     }
 

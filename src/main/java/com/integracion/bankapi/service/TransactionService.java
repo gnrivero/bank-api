@@ -4,6 +4,7 @@ import com.integracion.bankapi.model.*;
 import com.integracion.bankapi.model.dto.AccountDTO;
 import com.integracion.bankapi.model.dto.TransactionAccountDTO;
 import com.integracion.bankapi.model.dto.TransactionDTO;
+import com.integracion.bankapi.model.exception.AccountNotFoundException;
 import com.integracion.bankapi.model.mapper.TransactionMapper;
 import com.integracion.bankapi.repository.AccountRepository;
 import com.integracion.bankapi.repository.TransactionRepository;
@@ -34,8 +35,7 @@ public class TransactionService {
 
     public TransactionDTO createWithdraw(TransactionDTO transactionDTO) {
 
-        Optional<Account> accountFromRepo = accountRepo.findById(transactionDTO.getAccountId());
-        Account account = accountFromRepo.get();
+        Account account = getAccountFromTransaction(transactionDTO);
 
         transactionDTO.setTransactionType(TransactionType.WITHDRAW.getShortName());
         transactionDTO.setOperationType("EXPENDITURE");
@@ -50,15 +50,14 @@ public class TransactionService {
         account.setBalance(newBalance);
 
         accountRepo.save(account);
-        repo.save(transaction);
+        transaction=repo.save(transaction);
 
         return mapper.toDTO(transaction);
     }
 
     public TransactionDTO createDeposit(TransactionDTO transactionDTO) {
 
-        Optional<Account> accountFromRepo = accountRepo.findById(transactionDTO.getAccountId());
-        Account account = accountFromRepo.get();
+        Account account = getAccountFromTransaction(transactionDTO);
 
         transactionDTO.setTransactionType(TransactionType.DEPOSIT.getShortName());
         transactionDTO.setOperationType("INCOME");
@@ -71,7 +70,7 @@ public class TransactionService {
         account.setBalance(newBalance);
 
         accountRepo.save(account);
-        repo.save(transaction);
+        transaction=repo.save(transaction);
 
         return mapper.toDTO(transaction);
     }
@@ -102,14 +101,21 @@ public class TransactionService {
         }
     }
 
-    private void mapping (AccountDTO accountOrigin, Account account){
-        account.setId(accountOrigin.getId());
-        account.setIdentificationNumber(accountOrigin.getIdentificationNumber());
-        account.setBalance(accountOrigin.getBalance());
-        account.setName(accountOrigin.getName());
-        account.setAccountType(accountOrigin.getAccountType());
-        account.setOverdraft(accountOrigin.getOverdraft());
-        account.setActive(accountOrigin.getActive());
+
+    private Account getAccountFromTransaction(TransactionDTO transactionDTO) {
+
+        Optional<Account> accountFromRepo;
+
+        if (transactionDTO.getAccountId() == null && transactionDTO.getCbu() != null) {
+            accountFromRepo = accountRepo.findByIdentificationNumber(transactionDTO.getCbu());
+        } else {
+            accountFromRepo = accountRepo.findById(transactionDTO.getAccountId());
+        }
+
+        if (accountFromRepo.isEmpty())
+            throw new AccountNotFoundException();
+
+        return accountFromRepo.get();
     }
 
     private void mapping (Account accountOrigin, AccountDTO account){

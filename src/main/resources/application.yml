@@ -23,7 +23,7 @@ spring:
 # JPA
   jpa:
    show-sql: true
-   generate-ddl: false #primera ejecucion debe estar en true, el resto false
+   generate-ddl: false #no tocar jamás
    properties-hibernate:
     format_sql: true
     dialect: org.hibernate.dialect.MySQL8Dialect
@@ -36,7 +36,7 @@ logging:
   root: INFO
   org.springframework.web: INFO
   org.springframework.web.HttpLogging: INFO
-  org.springframework.security: DEBUG
+  org.springframework.security: INFO
 # Swagger
 swagger:
   host:
@@ -48,6 +48,7 @@ cors-config:
     - https://bank-app-int.herokuapp.com
     - http://localhost:8080
     - http://localhost:3000
+    - https://integracion-banco.herokuapp.com
   allowed-methods:
     - GET
     - POST
@@ -55,3 +56,13 @@ cors-config:
   allowed-headers:
     - Content-Type
     - Authorization
+
+# Bank B Integration
+web-client-config:
+  host: https://integracion-banco.herokuapp.com
+  auth:
+    username: banco_a.bankame
+    password: kH3yt7zQxMCMDDwEQaZR8q6g6e525q
+    uri: /login
+  transfer:
+    uri: /b2b/transacciones/transferir
