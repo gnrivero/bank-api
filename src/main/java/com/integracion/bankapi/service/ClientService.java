@@ -2,7 +2,7 @@ package com.integracion.bankapi.service;
 
 import com.integracion.bankapi.model.Account;
 import com.integracion.bankapi.model.Client;
-import com.integracion.bankapi.model.User;
+import com.integracion.bankapi.model.security.User;
 import com.integracion.bankapi.model.dto.ClientDTO;
 import com.integracion.bankapi.model.exception.AccountNotFoundException;
 import com.integracion.bankapi.model.exception.ClientNotFoundException;
@@ -38,9 +38,7 @@ public class ClientService {
             ClientDTO clientDTO = getClientByDniOrCuil(client.getDni(), client.getCuil());
         } catch (ClientNotFoundException e) {
 
-            User user = new User();
-            user.setUsername(client.getEmail());
-            userService.createNewUser(user);
+            userService.createNewUser(client.getEmail());
 
             client.setActive(true);
             return repo.save(client);

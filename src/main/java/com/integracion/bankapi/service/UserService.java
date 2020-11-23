@@ -1,6 +1,7 @@
 package com.integracion.bankapi.service;
 
-import com.integracion.bankapi.model.User;
+import com.integracion.bankapi.model.security.Authority;
+import com.integracion.bankapi.model.security.User;
 import com.integracion.bankapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,18 @@ public class UserService {
         this.repository = userRepo;
     }
 
-    public User createNewUser(User user){
+    public User createNewUser(String username){
+        User user = new User();
+        user.setUsername(username);
         user.setEnabled(true);
         user.setPassword("1234");
+
+        Authority authority = new Authority();
+        authority.setAuthority("ROLE_USER");
+        authority.setUser(user);
+
+        user.setAuthority(authority);
+
         return repository.save(user);
     }
 

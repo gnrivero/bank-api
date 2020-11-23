@@ -40,14 +40,22 @@ CREATE TABLE `accounts` (
 
 
 -- `bank-db`.authorities definition
-
 CREATE TABLE `authorities` (
+  `id` int(11) not null auto_increment,
   `username` varchar(50) NOT NULL,
   `authority` varchar(50) NOT NULL,
   UNIQUE KEY `ix_auth_username` (`username`,`authority`),
-  CONSTRAINT `fk_authorities_users` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
+  CONSTRAINT `fk_authorities_users` FOREIGN KEY (`username`) REFERENCES `users` (`username`),
+  PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+-- CREATE TABLE `authorities` (
+--  `username` varchar(50) NOT NULL,
+--  `authority` varchar(50) NOT NULL,
+--  UNIQUE KEY `ix_auth_username` (`username`,`authority`),
+--  CONSTRAINT `fk_authorities_users` FOREIGN KEY (`username`) REFERENCES `users` (`username`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- `bank-db`.providers definition
 
