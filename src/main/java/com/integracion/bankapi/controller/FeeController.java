@@ -25,17 +25,12 @@ public class FeeController {
         return  new ResponseEntity<>(HttpStatus.OK);
 
     }
-/*
+
     @GetMapping("/daily")
     public ResponseEntity<?> chargeDaily(){
 
-        TransferDTO createdExternalPayment = service.createPaymentTransfer(paymentDTO);
-
-        createdExternalPayment.setSourceReferenceNumber(null);
-        return new ResponseEntity<TransferDTO>(createdExternalPayment, HttpStatus.CREATED);
-        //return new ResponseEntity<String>(String.format("\"Pago realizado desde CBU: %s\"", paymentDTO.getCbu()), HttpStatus.CREATED);
+        service.chargeDaily();
+        return  new ResponseEntity<>(HttpStatus.OK);
     }
-
- */
 
 }

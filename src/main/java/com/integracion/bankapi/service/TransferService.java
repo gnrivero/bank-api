@@ -81,10 +81,13 @@ public class TransferService {
         t.setSourceAccount(accountProvider.getIdentificationNumber());
         t.setDestinationAccount(salaryPaymentDTO.getCbu());
         t.setAmount(salaryPaymentDTO.getAmount());
-        if(salaryPaymentDTO.getDetail().isEmpty())
-            t.setDetailSourceAccount(String.format("Pago a CBU %s", salaryPaymentDTO.getCbu()));
+
+        t.setDetailSourceAccount(String.format("Pago a CBU %s", salaryPaymentDTO.getCbu()));
 
         if (isInternalAccount(salaryPaymentDTO.getCbu())){
+            if(salaryPaymentDTO.getDetail().isEmpty())
+                t.setDetailDestinationAccount(String.format("Acreditacion desde CBU %s", accountProvider.getIdentificationNumber()));
+
             t.setDetailDestinationAccount(salaryPaymentDTO.getDetail());
         } else {
             t.setDetailDestinationAccount("pago_de_sueldo");
@@ -103,6 +106,9 @@ public class TransferService {
         t.setAmount(externalPaymentDTO.getAmount());
 
         if (isInternalAccount(externalPaymentDTO.getCbu())) {
+            if(externalPaymentDTO.getDetail().isEmpty()){
+                t.setDetailSourceAccount(String.format("Pago a CBU %s", accountProvider.getIdentificationNumber()));
+            }
             t.setDetailSourceAccount(externalPaymentDTO.getDetail());
         } else {
             t.setDetailSourceAccount("compra_en_establecimiento");
@@ -113,6 +119,28 @@ public class TransferService {
         return this.createTransfer(t);
     }
 
+    public TransferDTO createSupplierTransfer(ExternalPaymentDTO salaryPaymentDTO) {
+        ProviderDTO provider = providerService.getProviderByProviderCode(salaryPaymentDTO.getProviderCode());
+        AccountDTO accountProvider = accountService.getAccountById(provider.getAccountId());
+        TransferDTO t = new TransferDTO();
+        t.setSourceAccount(accountProvider.getIdentificationNumber());
+        t.setDestinationAccount(salaryPaymentDTO.getCbu());
+        t.setAmount(salaryPaymentDTO.getAmount());
+        t.setDetailSourceAccount(String.format("Pago a CBU %s", salaryPaymentDTO.getCbu()));
+
+        if (isInternalAccount(salaryPaymentDTO.getCbu())){
+            if(salaryPaymentDTO.getDetail().isEmpty()) {
+                t.setDetailDestinationAccount(String.format("Acreditacion desde CBU %s", accountProvider.getIdentificationNumber()));
+            }
+            t.setDetailDestinationAccount(salaryPaymentDTO.getDetail());
+        } else {
+            //TODO falta definir por el banco B
+            t.setDetailDestinationAccount("pago_de_sueldo");
+        }
+
+        return this.createTransfer(t);
+
+    }
 
     private Boolean isInternalAccount(String cbu) {
         return cbu.startsWith("456");

@@ -131,4 +131,55 @@ public class FeeService {
         }
     }
 
+    public void chargeDaily() {
+
+        List<Account> accounts = accountRepo.getAccountByAccountTypeAndOverdraft();
+        //TODO ver de donde sacamos el id de la cuenta del banco (en el server el cliente id 1 tiene la cuenta id:10)
+        Optional<Account> accountBankRepo = accountRepo.findById(10);
+        Account accountBank = accountBankRepo.get();
+
+        for (Account account : accounts) {
+            //Sacar la cuenta del banco
+            if(account.getId()!=10){
+                //Cobro intereses
+                // Client
+                BigDecimal interest = ((account.getBalance()).multiply(AccountType.CC.getInterest())).multiply(new BigDecimal(-1));
+
+                TransactionDTO transactionDTO = new TransactionDTO();
+                transactionDTO.setTransactionType(TransactionType.FEE.getShortName());
+                transactionDTO.setOperationType("EXPENDITURE");
+                transactionDTO.setDate(new Date());
+                transactionDTO.setAmount(interest);
+                transactionDTO.setCash(false);
+                transactionDTO.setDetail("cobro intereses por giro en descubierto");
+                Transaction transaction = mapper.toTransaction(transactionDTO);
+                transaction.setAccount(account);
+                //TODO ver si validamos para el cobro de comisiones
+                //limitValidator.validateAccountLimit(account, transaction.getAmount());
+
+                BigDecimal newBalance = account.getBalance().subtract(interest);
+                account.setBalance(newBalance);
+                // Bank
+                TransactionDTO transactionBankDTO = new TransactionDTO();
+                transactionBankDTO.setTransactionType(TransactionType.FEE.getShortName());
+                transactionBankDTO.setOperationType("INCOME");
+                transactionBankDTO.setDate(new Date());
+                transactionBankDTO.setAmount(interest);
+                transactionBankDTO.setCash(false);
+                transactionBankDTO.setDetail(String.format("Cobro de intereses por descubierto de CBU: %s",account.getIdentificationNumber()));
+                Transaction transactionBank = mapper.toTransaction(transactionBankDTO);
+                transactionBank.setAccount(accountBank);
+                //TODO ver si validamos para el cobro de comisiones
+                //limitValidator.validateAccountLimit(account, transaction.getAmount());
+
+                BigDecimal newBalanceBank = accountBank.getBalance().add(transactionBank.getAmount());
+                accountBank.setBalance(newBalanceBank);
+
+                accountRepo.save(account);
+                accountRepo.save(accountBank);
+                repo.save(transaction);
+                repo.save(transactionBank);
+            }
+        }
+    }
 }
