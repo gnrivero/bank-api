@@ -20,8 +20,8 @@ public class Authority {
     private Integer id;
     private String authority;
 
-    @OneToOne
+    /*@OneToOne
     @JoinColumn(name = "username")
-    private User user;
+    private User user;*/
 
 }

@@ -22,10 +22,10 @@ public class User {
     private String username;
     private String password;
     private Boolean enabled;
-    @OneToOne(mappedBy = "user" ,
+    /*@OneToOne(mappedBy = "user" ,
               fetch = FetchType.LAZY,
               cascade= CascadeType.ALL,
               orphanRemoval = true)
-    private Authority authority;
+    private Authority authority;*/
 
 }

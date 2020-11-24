@@ -17,7 +17,8 @@ public class ResponseHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             InvalidAccountType.class,
             AccountLimitSurpassedException.class,
-            PaymentExpireException.class
+            PaymentExpireException.class,
+            InvalidUserException.class
     })
     public ResponseEntity<Object> handleInvalidAccountTypeException(final Exception e) {
         return new ResponseEntity<>(new ProblemDetail(e.getMessage()),null, HttpStatus.BAD_REQUEST);

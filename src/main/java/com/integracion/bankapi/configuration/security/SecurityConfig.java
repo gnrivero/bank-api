@@ -19,18 +19,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CorsConfig corsConfig;
-    @Autowired
-    DataSource dataSource;
+    //@Autowired
+    //DataSource dataSource;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
                 .authorizeRequests(requests ->
-                    requests.antMatchers("/swagger-ui.html").permitAll()
-                    .anyRequest().authenticated()
-                )
-                .httpBasic();
+                                requests.anyRequest().permitAll()
+                    //requests.antMatchers("/swagger-ui.html").permitAll()
+                    //.anyRequest().authenticated()
+                );
+                //.httpBasic();
     }
 
     @Bean
@@ -44,17 +45,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return source;
     }
 
-    @Override
+
+    /*@Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .usersByUsernameQuery("select username, password, enabled from users where username = ?")
                 .authoritiesByUsernameQuery("select username, authority from authorities where username = ?");
-    }
+    }*/
 
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    //@Bean
+    //public PasswordEncoder getPasswordEncoder() {
+    //    return new BCryptPasswordEncoder();
+    //}
 
 }
