@@ -135,7 +135,7 @@ public class TransferService {
             t.setDetailDestinationAccount(salaryPaymentDTO.getDetail());
         } else {
             //TODO falta definir por el banco B
-            t.setDetailDestinationAccount("pago_de_sueldo");
+            t.setDetailDestinationAccount("pago_por_venta_con_tdc");
         }
 
         return this.createTransfer(t);
