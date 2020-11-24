@@ -85,10 +85,10 @@ public class TransferService {
         t.setDetailSourceAccount(String.format("Pago a CBU %s", salaryPaymentDTO.getCbu()));
 
         if (isInternalAccount(salaryPaymentDTO.getCbu())){
-            if(salaryPaymentDTO.getDetail().isEmpty())
+            if(salaryPaymentDTO.getDetail() == null)
                 t.setDetailDestinationAccount(String.format("Acreditacion desde CBU %s", accountProvider.getIdentificationNumber()));
-
-            t.setDetailDestinationAccount(salaryPaymentDTO.getDetail());
+            else
+                t.setDetailDestinationAccount(salaryPaymentDTO.getDetail());
         } else {
             t.setDetailDestinationAccount("pago_de_sueldo");
         }
@@ -106,9 +106,9 @@ public class TransferService {
         t.setAmount(externalPaymentDTO.getAmount());
 
         if (isInternalAccount(externalPaymentDTO.getCbu())) {
-            if(externalPaymentDTO.getDetail().isEmpty()){
+            if(externalPaymentDTO.getDetail() == null)
                 t.setDetailSourceAccount(String.format("Pago a CBU %s", accountProvider.getIdentificationNumber()));
-            }
+            else
             t.setDetailSourceAccount(externalPaymentDTO.getDetail());
         } else {
             t.setDetailSourceAccount("compra_en_establecimiento");
@@ -129,9 +129,9 @@ public class TransferService {
         t.setDetailSourceAccount(String.format("Pago a CBU %s", salaryPaymentDTO.getCbu()));
 
         if (isInternalAccount(salaryPaymentDTO.getCbu())){
-            if(salaryPaymentDTO.getDetail().isEmpty()) {
+            if(salaryPaymentDTO.getDetail() == null)
                 t.setDetailDestinationAccount(String.format("Acreditacion desde CBU %s", accountProvider.getIdentificationNumber()));
-            }
+            else
             t.setDetailDestinationAccount(salaryPaymentDTO.getDetail());
         } else {
             //TODO falta definir por el banco B
