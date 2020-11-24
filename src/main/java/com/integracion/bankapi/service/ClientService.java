@@ -37,11 +37,10 @@ public class ClientService {
         try {
             ClientDTO clientDTO = getClientByDniOrCuil(client.getDni(), client.getCuil());
         } catch (ClientNotFoundException e) {
-
-            userService.createNewUser(client.getEmail());
-
             client.setActive(true);
-            return repo.save(client);
+            client = repo.save(client);
+            userService.createNewUser(client.getEmail(), client);
+            return client;
         }
 
         throw new ClientNotFoundException(

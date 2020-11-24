@@ -1,5 +1,7 @@
 package com.integracion.bankapi.service;
 
+import com.integracion.bankapi.model.Client;
+import com.integracion.bankapi.model.UserType;
 import com.integracion.bankapi.model.dto.security.UserDTO;
 import com.integracion.bankapi.model.exception.InvalidUserException;
 import com.integracion.bankapi.model.mapper.UserMapper;
@@ -20,17 +22,13 @@ public class UserService {
     private UserRepository repository;
     private UserMapper mapper;
 
-    public User createNewUser(String username){
+    public User createNewUser(String username, Client client){
         User user = new User();
         user.setUsername(username);
         user.setEnabled(true);
         user.setPassword(new BCryptPasswordEncoder().encode("1234"));
-
-        Authority authority = new Authority();
-        authority.setAuthority("ROLE_USER");
-        //authority.setUser(user);
-
-        //user.setAuthority(authority);
+        user.setType(UserType.CLIENT);
+        user.setClient(client);
 
         return repository.save(user);
     }

@@ -22,6 +22,10 @@ public class User {
     private String username;
     private String password;
     private Boolean enabled;
+    private String type;
+    @OneToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
     /*@OneToOne(mappedBy = "user" ,
               fetch = FetchType.LAZY,
               cascade= CascadeType.ALL,

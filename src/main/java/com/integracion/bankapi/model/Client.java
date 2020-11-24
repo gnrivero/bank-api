@@ -1,5 +1,7 @@
 package com.integracion.bankapi.model;
 
+import com.integracion.bankapi.model.security.User;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,6 +22,11 @@ public class Client {
     private String email;
     private Boolean active;
 
+    @OneToOne(mappedBy = "client" ,
+              fetch = FetchType.LAZY,
+              cascade= CascadeType.ALL,
+              orphanRemoval = true)
+    private User user;
 
     @OneToMany( mappedBy = "client" , fetch = FetchType.LAZY,
             cascade= CascadeType.ALL, orphanRemoval = true)

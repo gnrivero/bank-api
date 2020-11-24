@@ -14,11 +14,17 @@ CREATE TABLE `clients` (
 
 -- `bank-db`.users definition
 
+-- `bank-db`.users definition
+
 CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `enabled` tinyint(1) NOT NULL,
-  PRIMARY KEY (`username`)
+  `type` varchar(255) DEFAULT NULL,
+  `client_id` int DEFAULT NULL,
+  PRIMARY KEY (`username`),
+  KEY `FKqvykjc6027qa8n5es37omu3xs` (`client_id`),
+  CONSTRAINT `FKqvykjc6027qa8n5es37omu3xs` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

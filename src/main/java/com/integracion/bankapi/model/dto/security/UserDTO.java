@@ -9,5 +9,9 @@ import lombok.Value;
 public class UserDTO {
 
     private String username;
+    private String type;
+    private String cuil;
+    private Integer clientId;
+    private String name;
 
 }
