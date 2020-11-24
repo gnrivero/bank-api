@@ -55,6 +55,7 @@ cors-config:
     - PATCH
   allowed-headers:
     - Content-Type
+    - Authorization
 
 # Bank B Integration
 web-client-config:
@@ -65,4 +66,3 @@ web-client-config:
     uri: /login
   transfer:
     uri: /b2b/transacciones/transferir
-

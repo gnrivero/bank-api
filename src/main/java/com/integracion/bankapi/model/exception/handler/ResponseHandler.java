@@ -14,12 +14,22 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class ResponseHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({ InvalidAccountType.class, AccountLimitSurpassedException.class, PaymentExpireException.class})
+    @ExceptionHandler({
+            InvalidAccountType.class,
+            AccountLimitSurpassedException.class,
+            PaymentExpireException.class,
+            InvalidUserException.class
+    })
     public ResponseEntity<Object> handleInvalidAccountTypeException(final Exception e) {
         return new ResponseEntity<>(new ProblemDetail(e.getMessage()),null, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({ ClientNotFoundException.class, AccountNotFoundException.class, ProviderNotFoundException.class, PaymentNotFoundException.class })
+    @ExceptionHandler({
+            ClientNotFoundException.class,
+            AccountNotFoundException.class,
+            ProviderNotFoundException.class,
+            PaymentNotFoundException.class
+    })
     public ResponseEntity<Object> handleClientNotFoundException(final Exception e) {
         return new ResponseEntity<>(new ProblemDetail(e.getMessage()),null, HttpStatus.NOT_FOUND);
     }
