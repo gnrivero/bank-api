@@ -42,7 +42,13 @@ public class TransferService {
         deposit.setCbu(transferDTO.getDestinationAccount());
 
         if(transferDTO.getDetailDestinationAccount() == null) {
-            deposit.setDetail(String.format("Transferenca desde cuenta CBU %s", transferDTO.getSourceAccount()));
+            //Es una transferencia "desde" el banco. La cuenta origen siempre es de nuestro banco pero la de destino puede que no
+            if(isInternalAccount(transferDTO.getDestinationAccount())){
+                deposit.setDetail(String.format("Transferenca desde cuenta CBU %s", transferDTO.getSourceAccount()));
+            }
+            else{
+                deposit.setDetail("deposito");
+            }
         } else {
             deposit.setDetail(transferDTO.getDetailDestinationAccount());
         }
@@ -134,7 +140,6 @@ public class TransferService {
             else
             t.setDetailDestinationAccount(salaryPaymentDTO.getDetail());
         } else {
-            //TODO falta definir por el banco B
             t.setDetailDestinationAccount("pago_por_venta_con_tdc");
         }
 
