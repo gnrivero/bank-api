@@ -50,6 +50,8 @@ public class FeeService {
                     //Pagar intereses
                     // Client
                     BigDecimal balanceStartMonth = accountRepo.getBalanceStartMonth(account.getId());
+                    if (balanceStartMonth == null)
+                        balanceStartMonth=new BigDecimal(0);
                     BigDecimal interest = (((account.getBalance().add(balanceStartMonth)).add(account.getBalance())).divide( new BigDecimal(2))).multiply(AccountType.CA.getInterest());
 
                     TransactionDTO transactionDTO = new TransactionDTO();
