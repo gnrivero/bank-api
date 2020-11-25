@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,15 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     @Transactional
     @Query(value = "delete from payments where paid = false and provider_id = ?1", nativeQuery = true)
     void removeExpired(Integer id);
+
+
+    @Query(value = "select * from payments WHERE paid = true and provider_id = ?1 and date > CURRENT_DATE - INTERVAL 30 DAY ", nativeQuery = true)
+    List<Payment> getLastMonthsPayments(Integer id);
+
+
+
+
+
 /*
     @Query(value = "select * from transactions t where t.account_id =  ?1 ORDER BY date DESC ",
             nativeQuery = true)

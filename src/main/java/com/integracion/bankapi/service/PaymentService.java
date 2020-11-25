@@ -150,6 +150,24 @@ public class PaymentService {
         return paymentDTOs;
     }
 
+    public List<PaymentDTO> getLastMonthsPayments(String providerCode){
+
+        Optional<Provider> provider = repoProvider.findByProviderCode(providerCode);
+        if (provider.isEmpty()){
+            throw new ProviderNotFoundException();
+        }
+        List<Payment> payments = repo.getLastMonthsPayments(provider.get().getId());
+
+        List<PaymentDTO> paymentDTOs = new ArrayList<PaymentDTO>();
+        for (Payment p: payments){
+            PaymentDTO pDTO = toDTO(p);
+            paymentDTOs.add(pDTO);
+
+        }
+        return paymentDTOs;
+    }
+
+
     public void generatePayments(String providerCode, List<PaymentDTO> listPayment ) {
         Optional<Provider> provider = repoProvider.findByProviderCode(providerCode);
         if (provider.isEmpty())
