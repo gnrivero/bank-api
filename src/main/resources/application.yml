@@ -49,6 +49,7 @@ cors-config:
     - http://localhost:8080
     - http://localhost:3000
     - https://integracion-banco.herokuapp.com
+    - https://integraciones-frontend.herokuapp.com
   allowed-methods:
     - GET
     - POST
