@@ -23,6 +23,8 @@ public class User {
     private String password;
     private Boolean enabled;
     private String type;
+    private Boolean passwordReset;
+
     @OneToOne
     @JoinColumn(name = "client_id")
     private Client client;

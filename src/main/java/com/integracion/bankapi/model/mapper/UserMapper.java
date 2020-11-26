@@ -22,6 +22,7 @@ public class UserMapper {
                     .cuil(user.getClient().getCuil())
                     .type(user.getType())
                     .name(getName(user))
+                    .passwordReset(user.getPasswordReset().toString())
                 .build();
     }
 

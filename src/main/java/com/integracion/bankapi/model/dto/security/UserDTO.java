@@ -13,5 +13,6 @@ public class UserDTO {
     private String cuil;
     private Integer clientId;
     private String name;
+    private String passwordReset;
 
 }

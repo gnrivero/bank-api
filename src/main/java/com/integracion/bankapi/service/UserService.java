@@ -5,7 +5,6 @@ import com.integracion.bankapi.model.UserType;
 import com.integracion.bankapi.model.dto.security.UserDTO;
 import com.integracion.bankapi.model.exception.InvalidUserException;
 import com.integracion.bankapi.model.mapper.UserMapper;
-import com.integracion.bankapi.model.security.Authority;
 import com.integracion.bankapi.model.security.User;
 import com.integracion.bankapi.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -29,6 +28,7 @@ public class UserService {
         user.setPassword(new BCryptPasswordEncoder().encode("1234"));
         user.setType(UserType.CLIENT);
         user.setClient(client);
+        user.setPasswordReset(false);
 
         return repository.save(user);
     }
@@ -46,6 +46,11 @@ public class UserService {
         }
 
         throw new InvalidUserException();
+    }
+
+    public Integer updateUserPassword(Integer clientId, String password) {
+        String newPassword = new BCryptPasswordEncoder().encode(password);
+        return repository.updateUserPassword(newPassword, clientId);
     }
 
 }
