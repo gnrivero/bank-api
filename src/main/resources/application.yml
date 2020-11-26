@@ -50,6 +50,7 @@ cors-config:
     - http://localhost:3000
     - https://integracion-banco.herokuapp.com
     - https://integraciones-frontend.herokuapp.com
+    - https://appintuade.herokuapp.com
   allowed-methods:
     - GET
     - POST
